@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="./css/login.css" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway"
+      rel="stylesheet"
+    />
+    <title>Login | QuBe</title>
+  </head>
+  <body onload="loggedin()">
+    <div class="container1">
+      <div class="login-left">
+        <div class="login-header">
+          <h1>Welcome to QuBe</h1>
+          <p>Please login to use the platform</p>
+        </div>
+        <form class="login-form" action="" method="POST">
+          <% if(error !== "None"){ %>
+          <h5 class="alert alert-danger fs-6"><%=error%></h5>
+          <%}%>
+          <div class="login-form-content">
+            <div class="form-item">
+              <label for="email">Enter Email</label>
+              <input type="text" id="email" name="email" required />
+            </div>
+            <div class="form-item">
+              <label for="password">Enter Password</label>
+              <input type="password" id="password" name="password" required />
+            </div>
+            <button type="submit">Login</button>
+            <p>Don't have an account? <a href="/registration">Sign Up</a></p>
+          </div>
+        </form>
+      </div>
+
+      <div class="login-right">
+        <img src="./assets/QuBe-Logo.png" />
+      </div>
+    </div>
+
+    <script>
+      function loggedin() {
+        '<% if(loggedin){%>';
+        swal({
+          title: 'Successfully Login',
+          text: 'Loading...',
+          icon: 'success',
+          timer: 2000,
+          button: false,
+        }).then(function () {
+          window.location = '/home';
+        });
+        ('<%} else {%>');
+        window.location = '/';
+        ('<%}%>');
+      }
+    </script>
+    <script
+      src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"
+      defer
+    ></script>
+  </body>
+</html>
