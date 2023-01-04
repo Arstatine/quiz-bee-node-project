@@ -14,6 +14,7 @@ After installing, run:
 It runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-#### Note:
+#### Notes:
 
-Create your .env file for this project.
+- It uses cdn links so you must run it with an internet connection.
+- Create your .env file for this project.
