@@ -9,7 +9,7 @@ It install all dependencies for your project.
 
 After installing, run: 
 
-### `npm ren dev`
+### `npm run dev`
 
 It runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
