@@ -4,8 +4,11 @@
     <div class="card-body">
       <h5 class="card-title"><%=quiz.title %></h5>
       <p class="card-text"><%=quiz.description %></p>
-      <a href="/create/<%=quiz._id%>" class="btn btn-secondary">Edit Quiz</a>
-      <a href="#" class="btn btn-primary">Start Quiz</a>
+      <a href="/quiz/<%=quiz._id%>/lobby" class="btn btn-primary">Start Quiz</a>
+      <a href="/quiz/<%=quiz._id%>" class="btn btn-secondary">Edit Quiz</a>
+      <a href="/api/quiz/<%=quiz._id%>/delete" class="btn btn-danger"
+        >Delete Quiz</a
+      >
     </div>
   </div>
 </div>

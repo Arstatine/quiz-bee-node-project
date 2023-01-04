@@ -80,7 +80,7 @@ const createNewUser = async (req, res, next) => {
 
     if (!user) return res.json({ err: 'error' });
 
-    return res.render('registration.ejs', { register: true });
+    return res.render('registration.ejs', { register: true, error: 'None' });
   } catch (e) {
     next(e);
   }

@@ -2,10 +2,12 @@ const usersController = require('./users/usersController');
 const homeController = require('./home/homeController');
 const createController = require('./create/createController');
 const dashboardController = require('./dashboard/dashboardController');
+const reportsController = require('./reports/reportsController');
 
 module.exports = {
   usersController,
   homeController,
   createController,
   dashboardController,
+  reportsController,
 };

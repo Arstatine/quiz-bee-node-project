@@ -4,18 +4,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QuBe | Create</title>
-    <link rel="icon" href="./assets/QuBe-Logo.png" />
-    <link rel="stylesheet" href="./css/home.css" />
-    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <title>QuBe | Question</title>
+    <link rel="icon" href="../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../css/home.css" />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
   </head>
-  <body style="min-height: 100vh; height: 100%; width: 100vw">
+  <body>
     <header>
       <nav class="navbar navbar-expand-lg p-4">
         <div class="container-fluid">
-          <a class="navbar-brand text-light fs-3" href="/">
+          <a class="navbar-brand text-light fs-3" href="#">
             <img
-              src="./assets/QuBe-Logo.png"
+              src="../assets/QuBe-Logo.png"
               alt="Logo"
               width="35"
               height="35"
@@ -38,7 +39,7 @@
                     id="navbarDropdownMenuLink"
                   >
                     <img
-                      src="./assets/profile.png"
+                      src="../assets/profile.png"
                       width="40"
                       height="40"
                       class="rounded-circle"
@@ -68,45 +69,26 @@
     </header>
 
     <div class="container p-5">
-      <div class="row d-flex justify-content-center align-items-center">
-        <div class="col-sm-6 mb-3 mb-sm-0">
-          <div class="card">
-            <div class="card-body">
-              <form action="" method="POST">
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Enter quiz title"
-                  class="form-control-lg w-100 my-2 text-center text-uppercase"
-                  required
-                />
-                <textarea
-                  name="description"
-                  cols="30"
-                  rows="5"
-                  class="form-control fs-5 my-2"
-                  placeholder="Enter description"
-                  style="border: 1px solid black"
-                  required
-                ></textarea>
+      <a
+        href="/dashboard"
+        class="btn btn-primary btn-lg text-light d-flex justify-content-center align-items-center mb-3"
+        style="min-width: 100px; width: 150px"
+        ><ion-icon name="arrow-back-circle-outline"></ion-icon>&nbsp;Back</a
+      >
 
-                <button
-                  type="submit"
-                  class="btn btn-success btn-lg w-100 my-2 d-flex justify-content-center align-items-center"
-                >
-                  <ion-icon name="create-outline"></ion-icon>&nbsp; Create
-                </button>
+      <%- include("layouts/question.ejs")%>
 
-                <a
-                  href="/home"
-                  class="btn btn-secondary btn-lg w-100 mb-2 d-flex justify-content-center align-items-center"
-                  ><ion-icon name="arrow-back-circle-outline"></ion-icon>&nbsp;
-                  BACK</a
-                >
-              </form>
-            </div>
-          </div>
-        </div>
+      <div class="text-center my-2">
+        <a
+          href="/quiz/<%-findQuestion._id%>/add"
+          class="btn btn-lg btn-success m-2"
+          >Add Question</a
+        >
+        <a
+          href="/quiz/<%-findQuestion._id%>/lobby"
+          class="btn btn-lg btn-primary m-2"
+          >Start Quiz</a
+        >
       </div>
     </div>
 
@@ -118,13 +100,7 @@
       nomodule
       src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
     ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
-      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="./modified-js/question.js"></script>
+
+    <script src="../js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

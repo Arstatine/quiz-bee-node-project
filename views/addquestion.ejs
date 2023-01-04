@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuBe | Add Question</title>
+    <link rel="icon" href="../../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../../css/home.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+    <style>
+      @media (max-width: 768px) {
+        .container {
+          width: 100% !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container pt-5 w-50">
+      <form action="" method="POST">
+        <input
+          type="text"
+          class="form-control-lg w-100 my-2"
+          name="text"
+          placeholder="Enter question"
+          required
+        />
+
+        <select name="level" class="form-select-lg w-100 my-2" required>
+          <option value="">Select level</option>
+          <option value="easy">Easy</option>
+          <option value="average">Average</option>
+          <option value="Difficult">Difficult</option>
+        </select>
+
+        <select
+          name="type"
+          class="form-select-lg w-100 my-2"
+          id="questionType"
+          required
+        >
+          <option value="">Select type</option>
+          <option value="trueFalse">True or False</option>
+          <option value="multipleChoice">Multiple Choice</option>
+          <option value="identification">Identification</option>
+        </select>
+
+        <div class="container-fluid p-0 my-2 text-center">
+          <div class="w-100 text-start d-flex question-type flex-column"></div>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg my-2 me-1">
+          Save
+        </button>
+        <a
+          href="/quiz/<%=question_id%>"
+          class="btn btn-secondary btn-lg my-2 ms-1"
+          >Cancel</a
+        >
+      </form>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="../../modified-js/question.js"></script>
+  </body>
+</html>

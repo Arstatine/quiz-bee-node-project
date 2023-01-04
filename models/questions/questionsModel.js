@@ -21,10 +21,6 @@ const question = {
     type: Array,
     required: false,
   },
-  enumAnswer: {
-    type: String,
-    required: false,
-  },
   correctAnswer: {
     type: String,
     required: false,

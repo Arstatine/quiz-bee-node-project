@@ -1,0 +1,23 @@
+<% if(findQuestion.questions != ''){ %>
+
+<h2 class="text-light text-center mt-5"><%=findQuestion.title%></h2>
+<hr class="text-light mb-5" />
+<% let count = 0%>
+
+<div class="text-center">
+  <%findQuestion.questions.forEach(question => { %> <% count++%>
+  <a
+    href="/quiz/<%-findQuestion._id%>/<%=count%>"
+    class="btn btn-outline-light btn-lg text-start my-2 w-75"
+    ><%=question.question.text%>
+    <a
+      href="/quiz/<%-findQuestion._id%>/<%=count%>/delete"
+      class="btn btn-danger rounded-circle mx-2"
+      ><ion-icon name="trash-outline"></ion-icon></a
+  ></a>
+
+  <% }) %>
+</div>
+<%} else {%>
+<h6 class="alert alert-danger my-3" style="width: auto">No question yet!</h6>
+<%}%>

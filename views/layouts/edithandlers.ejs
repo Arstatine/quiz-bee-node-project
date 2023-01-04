@@ -1,0 +1,538 @@
+<form action="" method="POST">
+  <input
+    type="text"
+    class="form-control-lg w-100 my-2"
+    name="text"
+    value="<%=findQuestion.questions[arr-1].question.text%>"
+    placeholder="Enter question"
+    required
+  />
+
+  <select name="level" class="form-select-lg w-100 my-2" required>
+    <option value="">Select level</option>
+
+    <% if(findQuestion.questions[arr-1].question.level === "easy"){%>
+    <option value="easy" selected>Easy</option>
+    <option value="average">Average</option>
+    <option value="difficult">Difficult</option>
+    <% } else if(findQuestion.questions[arr-1].question.level === "average"){%>
+    <option value="easy">Easy</option>
+    <option value="average" selected>Average</option>
+    <option value="difficult">Difficult</option>
+    <% } else if(findQuestion.questions[arr-1].question.level ===
+    "difficult"){%>
+    <option value="easy">Easy</option>
+    <option value="average">Average</option>
+    <option value="difficult" selected>Difficult</option>
+    <% } else {%>
+    <option value="easy">Easy</option>
+    <option value="average">Average</option>
+    <option value="difficult">Difficult</option>
+    <% } %>
+  </select>
+
+  <select
+    name="type"
+    class="form-select-lg w-100 my-2"
+    id="questionTypeUpdate"
+    required
+  >
+    <option value="">Select type</option>
+
+    <% if(findQuestion.questions[arr-1].question.type === "trueFalse"){%>
+    <option value="trueFalse" selected>True or False</option>
+    <option value="multipleChoice">Multiple Choice</option>
+    <option value="identification">Identification</option>
+    <% } else if(findQuestion.questions[arr-1].question.type ===
+    "multipleChoice"){%>
+
+    <option value="trueFalse">True or False</option>
+    <option value="multipleChoice" selected>Multiple Choice</option>
+    <option value="identification">Identification</option>
+    <% } else if(findQuestion.questions[arr-1].question.type ===
+    "identification"){%>
+
+    <option value="trueFalse">True or False</option>
+    <option value="multipleChoice">Multiple Choice</option>
+    <option value="identification" selected>Identification</option>
+    <% } else {%>
+
+    <option value="trueFalse">True or False</option>
+    <option value="multipleChoice">Multiple Choice</option>
+    <option value="identification">Identification</option>
+    <% } %>
+  </select>
+
+  <div class="container-fluid p-0 my-2 text-center">
+    <div class="w-100 text-start d-flex flex-column question-type-update">
+      <% if(findQuestion.questions[arr-1].question.type === "trueFalse") {%> <%
+      if(findQuestion.questions[arr-1].question.answer === "true"){ %>
+      <div class="w-100 d-flex justify-content-between align-items-center type">
+        <input
+          type="radio"
+          class="btn-check type"
+          name="answer"
+          id="option1"
+          required
+          checked
+        />
+        <label class="btn btn-light btn-lg w-100 me-2 type" for="option1"
+          >True</label
+        >
+
+        <input
+          type="radio"
+          class="btn-check type"
+          name="answer"
+          id="option2"
+          required
+        />
+        <label class="btn btn-light btn-lg w-100 ms-2 type" for="option2"
+          >False</label
+        >
+      </div>
+      <% } else {%>
+      <div class="w-100 d-flex justify-content-between align-items-center type">
+        <input
+          type="radio"
+          class="btn-check type"
+          name="answer"
+          id="option1"
+          required
+        />
+        <label class="btn btn-light btn-lg w-100 me-2 type" for="option1"
+          >True</label
+        >
+
+        <input
+          type="radio"
+          class="btn-check type"
+          name="answer"
+          id="option2"
+          required
+          checked
+        />
+        <label class="btn btn-light btn-lg w-100 ms-2 type" for="option2"
+          >False</label
+        >
+      </div>
+      <% } %> <% } else if(findQuestion.questions[arr-1].question.type ===
+      "multipleChoice") {%> <% if(findQuestion.questions[arr-1].question.answer
+      === findQuestion.questions[arr-1].question.choices[0]){ %>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center mb-2 type"
+      >
+        <input
+          type="radio"
+          id="first"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+          checked
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="first-choice"
+          name="choice1"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onkeypress="updateRadioValue()"
+          placeholder="Enter first choice"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="second"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="second-choice"
+          placeholder="Enter second choice"
+          onkeypress="updateRadioValue()"
+          name="choice2"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="third"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter third choice"
+          onkeypress="updateRadioValue()"
+          id="third-choice"
+          name="choice3"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="fourth"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter fourth choice"
+          onkeypress="updateRadioValue()"
+          id="fourth-choice"
+          name="choice4"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          required
+        />
+      </div>
+      <% } else if(findQuestion.questions[arr-1].question.answer ===
+      findQuestion.questions[arr-1].question.choices[1]){ %>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center mb-2 type"
+      >
+        <input
+          type="radio"
+          id="first"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="first-choice"
+          name="choice1"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onkeypress="updateRadioValue()"
+          placeholder="Enter first choice"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="second"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+          checked
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="second-choice"
+          placeholder="Enter second choice"
+          onkeypress="updateRadioValue()"
+          name="choice2"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="third"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter third choice"
+          onkeypress="updateRadioValue()"
+          id="third-choice"
+          name="choice3"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="fourth"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter fourth choice"
+          onkeypress="updateRadioValue()"
+          id="fourth-choice"
+          name="choice4"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          required
+        />
+      </div>
+
+      <% } else if(findQuestion.questions[arr-1].question.answer ===
+      findQuestion.questions[arr-1].question.choices[2]){ %>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center mb-2 type"
+      >
+        <input
+          type="radio"
+          id="first"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="first-choice"
+          name="choice1"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onkeypress="updateRadioValue()"
+          placeholder="Enter first choice"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="second"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="second-choice"
+          placeholder="Enter second choice"
+          onkeypress="updateRadioValue()"
+          name="choice2"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="third"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+          checked
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter third choice"
+          onkeypress="updateRadioValue()"
+          id="third-choice"
+          name="choice3"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="fourth"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter fourth choice"
+          onkeypress="updateRadioValue()"
+          id="fourth-choice"
+          name="choice4"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          required
+        />
+      </div>
+
+      <% } else { %>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center mb-2 type"
+      >
+        <input
+          type="radio"
+          id="first"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="first-choice"
+          name="choice1"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onkeypress="updateRadioValue()"
+          placeholder="Enter first choice"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="second"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+          checked
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          id="second-choice"
+          placeholder="Enter second choice"
+          onkeypress="updateRadioValue()"
+          name="choice2"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="third"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter third choice"
+          onkeypress="updateRadioValue()"
+          id="third-choice"
+          name="choice3"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          required
+        />
+      </div>
+
+      <div
+        class="w-100 d-flex justify-content-between align-items-center my-2 type"
+      >
+        <input
+          type="radio"
+          id="fourth"
+          class="form-check-input fs-2 me-2 type"
+          style="aspect-ratio: 1/1"
+          readonly
+          name="answer"
+          required
+          checked
+        />
+        <input
+          type="text"
+          class="form-control-lg w-100 type"
+          placeholder="Enter fourth choice"
+          onkeypress="updateRadioValue()"
+          id="fourth-choice"
+          name="choice4"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          required
+        />
+      </div>
+
+      <% } %> <% } else { %>
+      <input
+        type="text"
+        class="form-control-lg w-100 type"
+        name="answer"
+        placeholder="Enter answer"
+        value="<%=findQuestion.questions[arr-1].question.answer %>"
+        required
+      />
+      <% } %>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg my-2 me-1">Save</button>
+  <a
+    href="/quiz/<%=findQuestion._id%>"
+    class="btn btn-secondary btn-lg my-2 ms-1"
+    >Cancel</a
+  >
+</form>
