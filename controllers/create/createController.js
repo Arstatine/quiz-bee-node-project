@@ -1,9 +1,4 @@
-const { Users, Questions } = require('../../models');
-const mongoose = require('mongoose');
-
-const DB_URL = process.env.MONGO_URL;
-
-const conn = mongoose.createConnection(DB_URL);
+const { Users, Questions, Reports } = require('../../models');
 
 const isUserLoggedIn = async (req, res, next) => {
   try {
@@ -28,6 +23,8 @@ const createQuiz = async (req, res, next) => {
     const _id = req.session.user_id;
 
     const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
 
     const question = await Questions.create({
       user_id: _id,
@@ -55,6 +52,8 @@ const createQuestion = async (req, res, next) => {
 
     const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
 
+    if (!findUser.isAdmin) return res.redirect('/home');
+
     return res.render('questionsview.ejs', { findUser, findQuestion });
   } catch (e) {
     next(e);
@@ -76,6 +75,8 @@ const editQuestion = async (req, res, next) => {
 
     const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
 
+    if (!findUser.isAdmin) return res.redirect('/home');
+
     return res.render('editquestion.ejs', {
       findUser,
       findQuestion,
@@ -90,6 +91,12 @@ const updateQuestion = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
     const date = new Date();
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
 
     const arrayNum = req.params.arr;
     const arr = arrayNum - 1;
@@ -127,6 +134,12 @@ const questionDelete = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
 
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
     const arrayNum = req.params.arr;
     const arr = arrayNum - 1;
     const question_id = req.params.id;
@@ -153,6 +166,12 @@ const fetchQuestion = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
 
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
     const question_id = req.params.id;
 
     return res.render('addquestion.ejs', { question_id: question_id });
@@ -165,6 +184,12 @@ const addQuestion = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
     const date = new Date();
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
 
     const question_id = req.params.id;
 
@@ -203,11 +228,58 @@ const deleteQuestion = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
 
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
     const question_id = req.params.id;
 
-    const delQuestion = await Questions.deleteOne({ _id: question_id });
+    await Questions.deleteOne({ _id: question_id });
 
     return res.redirect('/dashboard');
+  } catch (e) {
+    next(e);
+  }
+};
+
+const createLobby = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+    const date = new Date();
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    const question_id = req.params.id;
+    var pin = Math.floor(100000 + Math.random() * 999999);
+
+    const findQuestion = await Questions.findById(
+      { _id: question_id },
+      '_id title questions isStarted inLobby pin'
+    );
+
+    if (findQuestion.inLobby)
+      return res.render('lobby.ejs', {
+        findQuestion,
+        findUser,
+        uName: '',
+        pin: '',
+      });
+
+    findQuestion.updatedAt = date;
+    findQuestion.inLobby = true;
+    findQuestion.pin = pin;
+    await findQuestion.save();
+
+    return res.render('lobby.ejs', {
+      findQuestion,
+      findUser,
+      uName: '',
+      pin: '',
+    });
   } catch (e) {
     next(e);
   }
@@ -223,4 +295,5 @@ module.exports = {
   fetchQuestion,
   addQuestion,
   deleteQuestion,
+  createLobby,
 };

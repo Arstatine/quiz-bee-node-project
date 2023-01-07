@@ -10,9 +10,7 @@ router
 
 router.route('/quiz/:id').get(auth, createController.createQuestion);
 
-router.route('/quiz/:id/lobby').get(async (req, res) => {
-  res.send('LOBBY');
-});
+router.route('/host/:id').get(auth, createController.createLobby);
 
 router.route('/api/quiz/:id/delete').get(auth, createController.deleteQuestion);
 

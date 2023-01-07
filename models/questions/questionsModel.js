@@ -50,6 +50,10 @@ const questionsSchema = new mongoose.Schema({
     required: false,
     question,
   },
+  inLobby: {
+    type: Boolean,
+    default: false,
+  },
   isStarted: {
     type: Boolean,
     default: false,

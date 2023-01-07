@@ -27,7 +27,7 @@
           <div class="login-form-content">
             <div class="form-item">
               <label for="email">Enter Email</label>
-              <input type="text" id="email" name="email" required />
+              <input type="email" id="email" name="email" required />
             </div>
             <div class="form-item">
               <label for="password">Enter Password</label>
@@ -46,7 +46,7 @@
 
     <script>
       function loggedin() {
-        '<% if(loggedin){%>';
+        ('<% if(loggedin == true){ %>');
         swal({
           title: 'Successfully Login',
           text: 'Loading...',
@@ -56,9 +56,7 @@
         }).then(function () {
           window.location = '/home';
         });
-        ('<%} else {%>');
-        window.location = '/';
-        ('<%}%>');
+        ('<% } %>');
       }
     </script>
     <script

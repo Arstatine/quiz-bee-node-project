@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lobby</title>
+    <link rel="icon" href="../../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../../css/home.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+    <script>
+      const id = '<%=findQuestion._id%>';
+    </script>
+
+    <% if(findUser.isAdmin){%>
+    <style>
+      .remove-user:hover {
+        cursor: pointer;
+        background-color: #ff0000 !important;
+        color: white !important;
+      }
+    </style>
+    <% } %>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2 class="text-center text-light w-auto mb-3">
+        Join this Game using the Game Pin:
+      </h2>
+      <h1 class="text-center text-light w-auto mb-5"><%=findQuestion.pin %></h1>
+
+      <div
+        class="d-flex justify-content-center align-items-center flex-wrap bg-light p-5"
+        id="lobby-container"
+      ></div>
+
+      <% if(findUser.isAdmin){%>
+      <center>
+        <a
+          href=""
+          class="btn btn-success rounded-0 btn-lg w-50 p-3 font-bold fs-3 fw-bold mt-3"
+          >START</a
+        >
+      </center>
+      <% } %>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="../../modified-js/createLobby.js" defer></script>
+    <script src="../../modified-js/lobby.js"></script>
+  </body>
+</html>

@@ -1,9 +1,4 @@
 const { Users, Questions } = require('../../models');
-const mongoose = require('mongoose');
-
-const DB_URL = process.env.MONGO_URL;
-
-const conn = mongoose.createConnection(DB_URL);
 
 const isUserLoggedIn = async (req, res, next) => {
   try {
@@ -16,6 +11,8 @@ const isUserLoggedIn = async (req, res, next) => {
       { user_id: _id },
       '_id user_id title description'
     );
+
+    if (!findUser.isAdmin) return res.redirect('/home');
 
     return res.render('dashboard.ejs', { findUser, findQuestion });
   } catch (error) {

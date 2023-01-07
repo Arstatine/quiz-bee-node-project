@@ -1,10 +1,5 @@
 const { Users } = require('../../models');
 const bcryptjs = require('bcryptjs');
-const mongoose = require('mongoose');
-
-const DB_URL = process.env.MONGO_URL;
-
-const conn = mongoose.createConnection(DB_URL);
 
 const userLogout = async (req, res, next) => {
   try {

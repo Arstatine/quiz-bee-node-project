@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../css/lobby.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuBe | Lobby</title>
+    <link rel="icon" href="../../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../../css/home.css" />
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+    <script>
+      const id = '<%=findQuestion._id%>';
+      const uName = '<%=uName%>' || null;
+      const pin = '<%=pin%>' || null;
+      const user_id = '<%=findUser._id%>';
+    </script>
+  </head>
+  <body>
+    <h1 id="title1">Waiting on host to start game</h1>
+    <h3 id="title2">Do you see your name on the screen?</h3>
+    <div class="loader"></div>
+    <br />
+  </body>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+    integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="../../modified-js/joinLobby.js"></script>
+</html>
