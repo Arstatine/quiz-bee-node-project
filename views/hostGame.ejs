@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuBe | Host</title>
+    <link rel="icon" href="../../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../../css/home.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+    <style>
+      .type {
+        width: auto !important;
+      }
+
+      .fixed-bottom2 {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: 1030;
+      }
+
+      .outer-fit-this {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        height: 100% !important;
+      }
+
+      .fit-this {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        font-weight: bold !important;
+        color: white !important;
+        width: 45% !important;
+        height: 225px !important;
+        font-size: 2.5vmin !important;
+        word-break: break-all;
+      }
+
+      @media (max-width: 768px) {
+        .text-level {
+          width: 75% !important;
+          font-size: 1.5rem !important;
+        }
+
+        .fit-this {
+          padding: 5px !important;
+        }
+
+        .text-question {
+          font-size: 2rem !important;
+        }
+      }
+
+      .name-text {
+        font-size: 40px !important;
+        margin: 10px 0 0 0 !important;
+        font-weight: boder !important;
+        text-transform: uppercase !important;
+        color: #eeeeee !important;
+      }
+
+      .label-name {
+        font-size: 28px !important;
+        margin: 10px 0 0 0 !important;
+        font-weight: boder !important;
+        text-transform: uppercase !important;
+        color: #eeeeee !important;
+      }
+
+      @keyframes float {
+        0% {
+          box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+          transform: translatey(0px);
+        }
+        50% {
+          box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
+          transform: translatey(-20px);
+        }
+        100% {
+          box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+          transform: translatey(0px);
+        }
+      }
+
+      .container2 {
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+
+      .avatar {
+        width: 125px !important;
+        height: 125px !important;
+        box-sizing: border-box !important;
+        border: 5px white solid !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6) !important;
+        transform: translatey(0px) !important;
+        animation: float 6s ease-in-out infinite !important;
+      }
+      .top-img {
+        width: 100%;
+        height: auto;
+      }
+    </style>
+
+    <script>
+      const id = '<%=findQuestion._id%>';
+      const user_id = '<%=findUser._id%>';
+
+      window.addEventListener('beforeunload', function (e) {
+        return '';
+      });
+    </script>
+  </head>
+  <body style="min-height: 100vh; height: 100%; overflow-x: hidden">
+    <div class="container-fluid my-5">
+      <div id="play-timer"></div>
+      <p
+        class="text-center text-light"
+        style="font-size: 4rem; font-weight: bolder"
+        id="time-count"
+      ></p>
+      <br />
+
+      <div
+        class="d-flex justify-content-center align-items-center flex-column text-center"
+        id="level-id"
+      ></div>
+
+      <div id="text-id"></div>
+      <center><div id="img-id" class="w-50 mb-5"></div></center>
+      <div id="correct-answer-id"></div>
+      <div id="leaderboard-id"></div>
+      <div class="text-center" id="tof-id"></div>
+      <div class="text-center" id="choices-id"></div>
+      <div class="text-center" id="identification-id"></div>
+      <div class="table-responsive" id="leaderboard-table-id"></div>
+      <div class="text-center" id="next-round-btn"></div>
+      <div class="text-center" id="top-leaderboards"></div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="../../modified-js/hostGame.js" defer></script>
+  </body>
+</html>

@@ -1,17 +1,33 @@
 <% if(findQuestion != ''){ %> <% findQuestion.forEach(quiz => { %>
 <div class="col-12 col-md-6 col-lg-4 my-2">
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title"><%=quiz.title %></h5>
-      <p class="card-text"><%=quiz.description %></p>
-      <a href="/host/<%=quiz._id%>" class="btn btn-primary">Start Quiz</a>
-      <a href="/quiz/<%=quiz._id%>" class="btn btn-secondary">Edit Quiz</a>
-      <a href="/api/quiz/<%=quiz._id%>/delete" class="btn btn-danger"
-        >Delete Quiz</a
-      >
+  <div class="card p-2 rounded-0 h-100">
+    <div class="card-body d-flex justify-content-between flex-column">
+      <div>
+        <h5 class="card-title fw-bold fs-3"><%=quiz.title %></h5>
+        <p class="card-text fs-6 text-secondary"><%=quiz.description %></p>
+      </div>
+      <div>
+        <a
+          href="/host/<%=quiz._id%>"
+          class="btn btn-primary rounded-0 fw-bold py-3 w-100 m-1"
+          >Start Quiz</a
+        >
+        <a
+          href="/quiz/<%=quiz._id%>"
+          class="btn btn-secondary rounded-0 fw-bold py-3 w-100 m-1"
+          >Edit Quiz</a
+        >
+        <a
+          onclick="delete_quiz('<%=quiz._id%>')"
+          class="btn btn-danger rounded-0 fw-bold py-3 w-100 m-1"
+          >Delete Quiz</a
+        >
+      </div>
     </div>
   </div>
 </div>
 <% }) %> <%} else {%>
-<h6 class="alert alert-danger m-3" style="width: auto">No quiz yet!</h6>
+<h6 class="alert alert-danger m-3 rounded-0 p-3 w-100" style="width: auto">
+  No quiz yet!
+</h6>
 <%}%>

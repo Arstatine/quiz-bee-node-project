@@ -1,23 +1,26 @@
 <% if(findQuestion.questions != ''){ %>
 
 <h2 class="text-light text-center mt-5"><%=findQuestion.title%></h2>
-<hr class="text-light mb-5" />
-<% let count = 0%>
-
-<div class="text-center">
-  <%findQuestion.questions.forEach(question => { %> <% count++%>
+<center><hr class="text-light mb-5 w-75 border-2" /></center>
+<% let count = 0%> <%findQuestion.questions.forEach(question => { %> <%
+count++%>
+<div
+  class="text-center border d-flex justify-content-between align-items-center w-auto mb-2"
+>
   <a
     href="/quiz/<%-findQuestion._id%>/<%=count%>"
-    class="btn btn-outline-light btn-lg text-start my-2 w-75"
+    class="btn btn-light btn-lg text-start w-100 rounded-0 px-3 py-3"
+    style="font-size: 2vmin !important"
     ><%=question.question.text%>
     <a
       href="/quiz/<%-findQuestion._id%>/<%=count%>/delete"
-      class="btn btn-danger rounded-circle mx-2"
+      class="btn btn-danger rounded-0 py-3 px-3"
+      style="font-size: 2vmin !important; height: 100% !important"
       ><ion-icon name="trash-outline"></ion-icon></a
   ></a>
-
-  <% }) %>
 </div>
-<%} else {%>
-<h6 class="alert alert-danger my-3" style="width: auto">No question yet!</h6>
+<% }) %> <%} else {%>
+<h6 class="alert alert-danger my-3 rounded-0 p-3" style="width: auto">
+  No question yet.
+</h6>
 <%}%>

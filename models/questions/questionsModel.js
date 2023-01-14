@@ -5,6 +5,14 @@ const question = {
     type: String,
     required: false,
   },
+  points: {
+    type: Number,
+    required: false,
+  },
+  timer: {
+    type: Number,
+    required: false,
+  },
   level: {
     type: String,
     required: false,
@@ -35,6 +43,7 @@ const questionsSchema = new mongoose.Schema({
   },
   title: {
     type: String,
+    uppercase: true,
     required: true,
   },
   description: {

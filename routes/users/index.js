@@ -15,6 +15,10 @@ router
   .get(auth, usersController.isLogLoggedIn)
   .post(auth, usersController.userLogin);
 
+router
+  .route('/profile')
+  .get(auth, usersController.fetchProfile)
+  .post(auth, usersController.updateProfile);
 router.route('/api/users/logout').get(auth, usersController.userLogout);
 
 module.exports = router;

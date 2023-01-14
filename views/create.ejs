@@ -38,19 +38,20 @@
                     id="navbarDropdownMenuLink"
                   >
                     <img
-                      src="./assets/profile.png"
+                      src="<%=findUser.avatar%>"
                       width="40"
                       height="40"
                       class="rounded-circle"
                     />
-                    &nbsp; <%if(findUser.isAdmin){%> Administrator <%} else {%>
-                    <%=findUser.name%> <%}%>
+                    &nbsp; <%=findUser.name%>
                   </a>
                   <ul
                     class="dropdown-menu dropdown-menu-end position-absolute"
                     aria-labelledby="navbarDropdownMenuLink"
                   >
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                      <a class="dropdown-item" href="/profile">Profile</a>
+                    </li>
                     <li class="logout-btn">
                       <a
                         class="dropdown-item logout-btn"
@@ -70,36 +71,36 @@
     <div class="container p-5">
       <div class="row d-flex justify-content-center align-items-center">
         <div class="col-sm-6 mb-3 mb-sm-0">
-          <div class="card">
+          <div class="card rounded-0">
             <div class="card-body">
               <form action="" method="POST">
                 <input
                   type="text"
                   name="title"
-                  placeholder="Enter quiz title"
-                  class="form-control-lg w-100 my-2 text-center text-uppercase"
+                  placeholder="Quiz Title"
+                  class="form-control-lg w-100 my-2 text-center text-uppercase rounded-0 p-3 fw-bold border border-2 border-secondary"
                   required
                 />
                 <textarea
                   name="description"
                   cols="30"
                   rows="5"
-                  class="form-control fs-5 my-2"
-                  placeholder="Enter description"
+                  class="form-control fs-5 my-2 rounded-0 border border border-2 border-secondary p-3"
+                  placeholder="Description"
                   style="border: 1px solid black"
                   required
                 ></textarea>
 
                 <button
                   type="submit"
-                  class="btn btn-success btn-lg w-100 my-2 d-flex justify-content-center align-items-center"
+                  class="btn btn-success btn-lg w-100 my-2 d-flex justify-content-center align-items-center rounded-0 py-3"
                 >
                   <ion-icon name="create-outline"></ion-icon>&nbsp; Create
                 </button>
 
                 <a
                   href="/home"
-                  class="btn btn-secondary btn-lg w-100 mb-2 d-flex justify-content-center align-items-center"
+                  class="btn btn-secondary btn-lg w-100 mb-2 d-flex justify-content-center align-items-center rounded-0 py-3"
                   ><ion-icon name="arrow-back-circle-outline"></ion-icon>&nbsp;
                   BACK</a
                 >

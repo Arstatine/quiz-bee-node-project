@@ -8,8 +8,38 @@
     <link rel="icon" href="./assets/QuBe-Logo.png" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
+
+    <script>
+      function delete_quiz(id) {
+        swal({
+          title: 'Are you sure?',
+          text: 'Once deleted, you will not be able to recover this quiz.',
+          icon: 'warning',
+          buttons: true,
+          dangerMode: true,
+        }).then((willDecline) => {
+          if (willDecline) {
+            swal('Deleting...', {
+              icon: 'info',
+              timer: 2000,
+              button: false,
+            }).then(function () {
+              window.location = '/api/quiz/' + id + '/delete';
+            });
+          }
+        });
+      }
+    </script>
   </head>
-  <body style="min-height: 100vh; height: 100%; min-width: 100vw; width: 100%">
+  <body
+    style="
+      min-height: 100vh;
+      height: 100%;
+      min-width: 100vw;
+      width: 100%;
+      overflow-x: hidden;
+    "
+  >
     <header>
       <nav class="navbar navbar-expand-lg p-4">
         <div class="container-fluid">
@@ -38,19 +68,20 @@
                     id="navbarDropdownMenuLink"
                   >
                     <img
-                      src="./assets/profile.png"
+                      src="<%=findUser.avatar%>"
                       width="40"
                       height="40"
                       class="rounded-circle"
                     />
-                    &nbsp; <%if(findUser.isAdmin){%> Administrator <%} else {%>
-                    <%=findUser.name%> <%}%>
+                    &nbsp; <%=findUser.name%>
                   </a>
                   <ul
                     class="dropdown-menu dropdown-menu-end position-absolute"
                     aria-labelledby="navbarDropdownMenuLink"
                   >
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                      <a class="dropdown-item" href="/profile">Profile</a>
+                    </li>
                     <li class="logout-btn">
                       <a
                         class="dropdown-item logout-btn"
@@ -70,7 +101,7 @@
     <div class="container p-5">
       <a
         href="/home"
-        class="btn btn-primary btn-lg text-light d-flex justify-content-center align-items-center mb-3"
+        class="btn btn-primary rounded-0 btn-lg text-light d-flex justify-content-center align-items-center mb-3"
         style="min-width: 100px; width: 150px"
         ><ion-icon name="arrow-back-circle-outline"></ion-icon>&nbsp;Back</a
       >
@@ -79,6 +110,10 @@
       </div>
     </div>
 
+    <script
+      src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"
+      defer
+    ></script>
     <script
       type="module"
       src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"

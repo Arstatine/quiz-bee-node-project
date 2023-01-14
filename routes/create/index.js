@@ -15,6 +15,10 @@ router.route('/host/:id').get(auth, createController.createLobby);
 router.route('/api/quiz/:id/delete').get(auth, createController.deleteQuestion);
 
 router
+  .route('/api/question/randomize/:id')
+  .get(auth, createController.randomizeQuestion);
+
+router
   .route('/quiz/:id/add')
   .get(auth, createController.fetchQuestion)
   .post(auth, createController.addQuestion);

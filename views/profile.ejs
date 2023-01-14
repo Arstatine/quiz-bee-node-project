@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuBe | Profile</title>
+    <link rel="icon" href="./assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="./css/home.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+
+    <style>
+      .content {
+        max-width: 750px !important;
+      }
+    </style>
+  </head>
+  <body
+    onload="updated()"
+    style="min-height: 100vh; height: 100%"
+    class="d-flex justify-content-center align-items-center"
+  >
+    <div class="container content">
+      <form
+        action=""
+        method="POST"
+        class="bg-light p-5 d-flex justify-content-center align-items-center flex-column"
+      >
+        <h1 class="mb-3 fw-bold">PROFILE</h1>
+        <img
+          src="<%=findUser.avatar%>"
+          alt="Profile"
+          class="h-50 w-50 rounded-circle border border-secondary mb-5 p-3"
+          style="background-color: #cccccc"
+        />
+
+        <% if(error !== "None"){ %>
+        <h5 class="alert alert-danger fs-6 w-100"><%=error%></h5>
+        <%}%>
+        <input
+          type="text"
+          class="form-control-lg rounded-0 p-3 mb-3 border border-secondary w-100"
+          value="<%=findUser.name%>"
+          name="name"
+          placeholder="Full Name"
+        />
+
+        <input
+          type="email"
+          class="form-control-lg rounded-0 p-3 mb-3 border border-secondary w-100"
+          value="<%=findUser.email%>"
+          name="email"
+          placeholder="Email Address"
+        />
+
+        <input
+          type="password"
+          class="form-control-lg rounded-0 p-3 mb-3 border border-secondary w-100"
+          placeholder="New Password"
+          name="placeholder"
+        />
+
+        <button
+          type="submit"
+          class="btn btn-success btn-lg py-3 px-5 text-center w-100 mb-3 rounded-0"
+        >
+          UPDATE
+        </button>
+        <a href="/" class="btn btn-secondary btn-lg py-3 px-5 w-100 rounded-0"
+          >CANCEL</a
+        >
+      </form>
+    </div>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script>
+      function updated() {
+        '<% if(updated){%>';
+        swal({
+          title: 'Updated Successfully',
+          text: 'Loading',
+          icon: 'success',
+          timer: 2000,
+          button: false,
+        }).then(() => {
+          window.location = '/home';
+        });
+        ('<%}%>');
+      }
+    </script>
+    <script
+      src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"
+      defer
+    ></script>
+  </body>
+</html>

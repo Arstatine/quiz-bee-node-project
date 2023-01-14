@@ -17,18 +17,52 @@
       }
     </style>
   </head>
-  <body>
+  <body style="min-height: 100vh; height: 100%">
     <div class="container pt-5 w-50">
-      <form action="" method="POST">
+      <form
+        action=""
+        method="POST"
+        class="bg-light py-5 px-3"
+        enctype="multipart/form-data"
+      >
+        <h3 class="text-center text-dark">Add Question</h3>
+        <br />
         <input
           type="text"
-          class="form-control-lg w-100 my-2"
+          class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
           name="text"
           placeholder="Enter question"
           required
         />
 
-        <select name="level" class="form-select-lg w-100 my-2" required>
+        <input
+          type="file"
+          class="file-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="file"
+          accept="image/*"
+        />
+
+        <input
+          type="number"
+          class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="points"
+          placeholder="Enter point/s"
+          required
+        />
+
+        <input
+          type="number"
+          class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="timer"
+          placeholder="Enter timer (in second/s)"
+          required
+        />
+
+        <select
+          name="level"
+          class="form-select-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          required
+        >
           <option value="">Select level</option>
           <option value="easy">Easy</option>
           <option value="average">Average</option>
@@ -37,7 +71,7 @@
 
         <select
           name="type"
-          class="form-select-lg w-100 my-2"
+          class="form-select-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
           id="questionType"
           required
         >
@@ -51,14 +85,19 @@
           <div class="w-100 text-start d-flex question-type flex-column"></div>
         </div>
 
-        <button type="submit" class="btn btn-success btn-lg my-2 me-1">
-          Save
-        </button>
-        <a
-          href="/quiz/<%=question_id%>"
-          class="btn btn-secondary btn-lg my-2 ms-1"
-          >Cancel</a
-        >
+        <div class="d-flex">
+          <button
+            type="submit"
+            class="btn btn-success btn-lg my-2 rounded-0 p-3 w-50 m-2 fw-bold"
+          >
+            Save
+          </button>
+          <a
+            href="/quiz/<%=question_id%>"
+            class="btn btn-secondary btn-lg my-2 rounded-0 p-3 w-50 m-2 fw-bold"
+            >Cancel</a
+          >
+        </div>
       </form>
     </div>
 

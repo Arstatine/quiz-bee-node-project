@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lobby</title>
+    <title>QuBe | Lobby</title>
     <link rel="icon" href="../../assets/QuBe-Logo.png" />
     <link rel="stylesheet" href="../../css/home.css" />
     <link rel="stylesheet" href="../../css/bootstrap.min.css" />
@@ -20,32 +20,85 @@
         background-color: #ff0000 !important;
         color: white !important;
       }
+
+      .lobby {
+        min-height: 500px;
+      }
+
+      .fixed-bottom1 {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 1030;
+      }
+
+      @media (max-width: 786px) {
+        .lobby-container {
+          width: 100% !important;
+        }
+
+        .lobby {
+          min-height: 400px;
+        }
+      }
+
+      @media (max-width: 1100px) {
+        .lobby-container {
+          width: 75% !important;
+        }
+      }
     </style>
     <% } %>
   </head>
-  <body>
-    <div class="container mt-5">
+  <body style="min-height: 100vh; height: 100%">
+    <div class="container my-5 w-50 lobby-container">
       <h2 class="text-center text-light w-auto mb-3">
         Join this Game using the Game Pin:
       </h2>
       <h1 class="text-center text-light w-auto mb-5"><%=findQuestion.pin %></h1>
 
       <div
-        class="d-flex justify-content-center align-items-center flex-wrap bg-light p-5"
+        class="d-flex justify-content-center align-items-center flex-wrap bg-light p-5 lobby"
         id="lobby-container"
       ></div>
 
-      <% if(findUser.isAdmin){%>
       <center>
         <a
-          href=""
+          href="/host/game/<%=findQuestion._id%>"
+          id="start-btn"
           class="btn btn-success rounded-0 btn-lg w-50 p-3 font-bold fs-3 fw-bold mt-3"
           >START</a
         >
       </center>
-      <% } %>
+      <center>
+        <a
+          href="/home"
+          id="start-btn"
+          class="btn btn-danger rounded-0 btn-lg w-50 p-3 font-bold fs-3 fw-bold mt-3"
+          >END</a
+        >
+      </center>
+    </div>
+    <audio class="remove-audio-timer" preload="auto" autoplay loop>
+      <source src="../../assets/lobby.mp3" type="audio/mpeg" />
+      Your browser does not support the audio tag.
+    </audio>
+    <div
+      class="fixed-bottom1 m-3 bg-light w-auto p-3 d-flex justify-content-between align-items-center rounded"
+      id="player-count"
+      style="font-weight: bold; font-size: 1.5rem"
+    >
+      <ion-icon name="person"></ion-icon>&nbsp;0
     </div>
 
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
       integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
@@ -54,6 +107,5 @@
     ></script>
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script src="../../modified-js/createLobby.js" defer></script>
-    <script src="../../modified-js/lobby.js"></script>
   </body>
 </html>

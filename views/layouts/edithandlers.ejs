@@ -1,14 +1,50 @@
-<form action="" method="POST">
+<form
+  action=""
+  method="POST"
+  class="bg-light py-5 px-3"
+  enctype="multipart/form-data"
+>
+  <h3 class="text-center text-dark">Update Question</h3>
+  <br />
   <input
     type="text"
-    class="form-control-lg w-100 my-2"
+    class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
     name="text"
     value="<%=findQuestion.questions[arr-1].question.text%>"
     placeholder="Enter question"
     required
   />
 
-  <select name="level" class="form-select-lg w-100 my-2" required>
+  <input
+    type="file"
+    class="file-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+    name="file"
+    accept="image/*"
+  />
+
+  <input
+    type="number"
+    class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+    name="points"
+    value="<%=findQuestion.questions[arr-1].question.points%>"
+    placeholder="Enter points"
+    required
+  />
+
+  <input
+    type="number"
+    class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+    name="timer"
+    value="<%=findQuestion.questions[arr-1].question.timer%>"
+    placeholder="Enter timer in seconds"
+    required
+  />
+
+  <select
+    name="level"
+    class="form-select-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+    required
+  >
     <option value="">Select level</option>
 
     <% if(findQuestion.questions[arr-1].question.level === "easy"){%>
@@ -33,7 +69,7 @@
 
   <select
     name="type"
-    class="form-select-lg w-100 my-2"
+    class="form-select-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
     id="questionTypeUpdate"
     required
   >
@@ -73,10 +109,13 @@
           class="btn-check type"
           name="answer"
           id="option1"
+          value="true"
           required
           checked
         />
-        <label class="btn btn-light btn-lg w-100 me-2 type" for="option1"
+        <label
+          class="btn btn-primary btn-lg w-100 m-2 type rounded-0 p-5"
+          for="option1"
           >True</label
         >
 
@@ -85,9 +124,12 @@
           class="btn-check type"
           name="answer"
           id="option2"
+          value="false"
           required
         />
-        <label class="btn btn-light btn-lg w-100 ms-2 type" for="option2"
+        <label
+          class="btn btn-danger btn-lg w-100 m-2 type rounded-0 p-5"
+          for="option2"
           >False</label
         >
       </div>
@@ -98,9 +140,12 @@
           class="btn-check type"
           name="answer"
           id="option1"
+          value="true"
           required
         />
-        <label class="btn btn-light btn-lg w-100 me-2 type" for="option1"
+        <label
+          class="btn btn-primary btn-lg w-100 m-2 type rounded-0 p-5"
+          for="option1"
           >True</label
         >
 
@@ -109,10 +154,13 @@
           class="btn-check type"
           name="answer"
           id="option2"
+          value="false"
           required
           checked
         />
-        <label class="btn btn-light btn-lg w-100 ms-2 type" for="option2"
+        <label
+          class="btn btn-danger btn-lg w-100 m-2 type rounded-0 p-5"
+          for="option2"
           >False</label
         >
       </div>
@@ -130,12 +178,14 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          onclick="updateRadioValue()"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
           required
           checked
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="first-choice"
           name="choice1"
           value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
@@ -155,11 +205,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="second-choice"
           placeholder="Enter second choice"
           onkeypress="updateRadioValue()"
@@ -179,11 +231,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter third choice"
           onkeypress="updateRadioValue()"
           id="third-choice"
@@ -203,11 +257,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter fourth choice"
           onkeypress="updateRadioValue()"
           id="fourth-choice"
@@ -229,11 +285,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="first-choice"
           name="choice1"
           value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
@@ -253,12 +311,14 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          onclick="updateRadioValue()"
           required
           checked
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="second-choice"
           placeholder="Enter second choice"
           onkeypress="updateRadioValue()"
@@ -278,11 +338,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter third choice"
           onkeypress="updateRadioValue()"
           id="third-choice"
@@ -302,11 +364,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter fourth choice"
           onkeypress="updateRadioValue()"
           id="fourth-choice"
@@ -329,11 +393,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="first-choice"
           name="choice1"
           value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
@@ -353,11 +419,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="second-choice"
           placeholder="Enter second choice"
           onkeypress="updateRadioValue()"
@@ -377,12 +445,14 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          onclick="updateRadioValue()"
           required
           checked
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter third choice"
           onkeypress="updateRadioValue()"
           id="third-choice"
@@ -402,11 +472,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter fourth choice"
           onkeypress="updateRadioValue()"
           id="fourth-choice"
@@ -428,11 +500,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="first-choice"
           name="choice1"
           value="<%=findQuestion.questions[arr-1].question.choices[0]%>"
@@ -452,12 +526,14 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[1]%>"
+          onclick="updateRadioValue()"
           required
           checked
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           id="second-choice"
           placeholder="Enter second choice"
           onkeypress="updateRadioValue()"
@@ -477,11 +553,13 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[2]%>"
+          onclick="updateRadioValue()"
           required
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter third choice"
           onkeypress="updateRadioValue()"
           id="third-choice"
@@ -501,12 +579,14 @@
           style="aspect-ratio: 1/1"
           readonly
           name="answer"
+          value="<%=findQuestion.questions[arr-1].question.choices[3]%>"
+          onclick="updateRadioValue()"
           required
           checked
         />
         <input
           type="text"
-          class="form-control-lg w-100 type"
+          class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
           placeholder="Enter fourth choice"
           onkeypress="updateRadioValue()"
           id="fourth-choice"
@@ -519,7 +599,7 @@
       <% } %> <% } else { %>
       <input
         type="text"
-        class="form-control-lg w-100 type"
+        class="form-control-lg w-100 type rounded-0 border border-2 border-secondary p-3"
         name="answer"
         placeholder="Enter answer"
         value="<%=findQuestion.questions[arr-1].question.answer %>"
@@ -529,10 +609,17 @@
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary btn-lg my-2 me-1">Save</button>
-  <a
-    href="/quiz/<%=findQuestion._id%>"
-    class="btn btn-secondary btn-lg my-2 ms-1"
-    >Cancel</a
-  >
+  <div class="d-flex">
+    <button
+      type="submit"
+      class="btn btn-success btn-lg my-2 rounded-0 p-3 w-50 m-2 fw-bold"
+    >
+      Save
+    </button>
+    <a
+      href="/quiz/<%=findQuestion._id%>"
+      class="btn btn-secondary btn-lg my-2 rounded-0 p-3 w-50 m-2 fw-bold"
+      >Cancel</a
+    >
+  </div>
 </form>

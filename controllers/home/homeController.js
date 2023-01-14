@@ -6,7 +6,10 @@ const isUserLoggedIn = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
 
     return res.render('home.ejs', { findUser });
   } catch (error) {
@@ -21,6 +24,8 @@ const joinLobby = async (req, res, next) => {
 
     const _id = req.session.user_id;
     const findUser = await Users.findOne({ _id }, '_id isAdmin');
+
+    if (!findUser) return res.redirect('/');
 
     const { name, pin } = req.body;
 

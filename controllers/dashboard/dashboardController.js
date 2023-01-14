@@ -6,11 +6,15 @@ const isUserLoggedIn = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
+
     const findQuestion = await Questions.find(
       { user_id: _id },
       '_id user_id title description'
-    );
+    ).sort({ createdAt: -1 });
 
     if (!findUser.isAdmin) return res.redirect('/home');
 

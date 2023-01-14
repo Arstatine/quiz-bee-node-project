@@ -1,0 +1,29 @@
+<% if(findReport != ''){ %> <% findReport.forEach(report => { %>
+<tr>
+  <th scope="row" class="p-3"><%=report.question_text%></th>
+  <td class="p-3"><%=report.question_description%></td>
+  <td class="p-3"><%=report.createdAt%></td>
+  <td class="p-3">
+    <a
+      href="/api/reports/download/<%=report.socket_id%>"
+      class="btn btn-success py-2 px-4 fw-bold"
+      >Download</a
+    >
+  </td>
+  <td class="p-3">
+    <a
+      onclick="delete_report('<%=report.socket_id%>')"
+      class="btn btn-danger py-2 px-4 fw-bold"
+      >Delete</a
+    >
+  </td>
+</tr>
+<% }) %> <% } else { %>
+<tr class="p-3">
+  <td colspan="5">
+    <h6 class="alert alert-danger m-3 rounded-0 p-3 w-auto" style="width: auto">
+      No data found.
+    </h6>
+  </td>
+</tr>
+<% } %>

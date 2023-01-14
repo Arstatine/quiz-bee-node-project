@@ -1,4 +1,6 @@
 const { Users, Questions, Reports } = require('../../models');
+const fs = require('fs');
+var crypto = require('crypto');
 
 const isUserLoggedIn = async (req, res, next) => {
   try {
@@ -6,7 +8,10 @@ const isUserLoggedIn = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
 
     return res.render('create.ejs', { findUser });
   } catch (error) {
@@ -20,16 +25,21 @@ const createQuiz = async (req, res, next) => {
 
     const { title, description } = req.body;
 
+    var desc = description.charAt(0).toUpperCase() + description.slice(1);
+
     const _id = req.session.user_id;
 
-    const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
     const question = await Questions.create({
       user_id: _id,
       title,
-      description,
+      description: desc,
     });
 
     return res.redirect('/quiz/' + question._id);
@@ -45,12 +55,20 @@ const createQuestion = async (req, res, next) => {
     const question_id = req.params.id;
     const _id = req.session.user_id;
 
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
     const findQuestion = await Questions.findOne(
       { _id: question_id },
       '_id title description questions'
     );
 
-    const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
@@ -68,12 +86,18 @@ const editQuestion = async (req, res, next) => {
     const question_id = req.params.id;
     const _id = req.session.user_id;
 
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
     const findQuestion = await Questions.findOne(
       { _id: question_id },
       '_id title description questions'
     );
 
-    const findUser = await Users.findOne({ _id }, '_id name email isAdmin');
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
@@ -94,7 +118,7 @@ const updateQuestion = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findById({ _id }, '_id isAdmin');
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
@@ -102,17 +126,44 @@ const updateQuestion = async (req, res, next) => {
     const arr = arrayNum - 1;
     const question_id = req.params.id;
 
-    const { text, level, type, answer, choice1, choice2, choice3, choice4 } =
-      req.body;
+    const {
+      text,
+      points,
+      timer,
+      level,
+      type,
+      answer,
+      choice1,
+      choice2,
+      choice3,
+      choice4,
+    } = req.body;
+
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
 
     const findQuestion = await Questions.findById(
       { _id: question_id },
       'questions updatedAt'
     );
 
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    if (req.files) {
+      var imgFile = req.files.file;
+      var fileName =
+        crypto.randomBytes(20).toString('hex') + '-' + imgFile.name;
+      imgFile.mv('./public/uploads/' + fileName);
+    } else {
+      var fileName = findQuestion.questions[arr].question.img;
+    }
+
     findQuestion.questions[arr].question = {
       text,
+      points: parseInt(points),
+      timer: parseInt(timer),
       level,
+      img: fileName,
       type,
       answer,
       choices: [choice1, choice2, choice3, choice4],
@@ -123,7 +174,6 @@ const updateQuestion = async (req, res, next) => {
     findQuestion.markModified('questions');
     await findQuestion.save();
 
-    console.log(findQuestion.questions[arr]);
     return res.redirect('/quiz/' + question_id);
   } catch (e) {
     next(e);
@@ -144,9 +194,18 @@ const questionDelete = async (req, res, next) => {
     const arr = arrayNum - 1;
     const question_id = req.params.id;
 
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
     const findQuestion = await Questions.findById(
       { _id: question_id },
       'questions updatedAt'
+    );
+
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    fs.unlinkSync(
+      './public/uploads/' + findQuestion.questions[arr].question.img
     );
 
     findQuestion.questions = findQuestion.questions.filter(
@@ -168,11 +227,13 @@ const fetchQuestion = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findById({ _id }, '_id isAdmin');
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
     const question_id = req.params.id;
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
 
     return res.render('addquestion.ejs', { question_id: question_id });
   } catch (e) {
@@ -187,26 +248,48 @@ const addQuestion = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findById({ _id }, '_id isAdmin');
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
     const question_id = req.params.id;
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
 
-    const { text, level, type, answer, choice1, choice2, choice3, choice4 } =
-      req.body;
-
-    const obj = { text, level, answer, choice1, choice2, choice3, choice4 };
+    const {
+      text,
+      points,
+      timer,
+      level,
+      type,
+      answer,
+      choice1,
+      choice2,
+      choice3,
+      choice4,
+    } = req.body;
 
     const findQuestion = await Questions.findById(
       { _id: question_id },
       'questions updatedAt'
     );
 
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    if (req.files) {
+      var imgFile = req.files.file;
+      var fileName =
+        crypto.randomBytes(20).toString('hex') + '-' + imgFile.name;
+      imgFile.mv('./public/uploads/' + fileName);
+    }
+
     findQuestion.questions[findQuestion.questions.length] = {
       question: {
         text,
+        points: parseInt(points),
+        timer: parseInt(timer),
         level,
+        img: fileName,
         type,
         answer,
         choices: [choice1, choice2, choice3, choice4],
@@ -230,11 +313,13 @@ const deleteQuestion = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findById({ _id }, '_id isAdmin');
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
     const question_id = req.params.id;
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
 
     await Questions.deleteOne({ _id: question_id });
 
@@ -251,10 +336,15 @@ const createLobby = async (req, res, next) => {
 
     const _id = req.session.user_id;
 
-    const findUser = await Users.findById({ _id }, '_id isAdmin');
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
 
     const question_id = req.params.id;
     var pin = Math.floor(100000 + Math.random() * 999999);
+
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
 
     const findQuestion = await Questions.findById(
       { _id: question_id },
@@ -285,6 +375,54 @@ const createLobby = async (req, res, next) => {
   }
 };
 
+const randomizeQuestion = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
+    const question_id = req.params.id;
+
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/)) return res.redirect('/home');
+
+    await Questions.findById({ _id: question_id }).then((result) => {
+      if (result) {
+        const randomize = (array) => {
+          const newArray = [...array];
+
+          newArray.reverse().forEach((item, index) => {
+            const j = Math.floor(Math.random() * (index + 1));
+            [newArray[index], newArray[j]] = [newArray[j], newArray[index]];
+          });
+
+          return newArray;
+        };
+
+        var currentValue = randomize(result.questions);
+
+        while (
+          JSON.stringify(currentValue) === JSON.stringify(result.questions)
+        ) {
+          currentValue = randomize(result.questions);
+        }
+
+        result.questions = currentValue;
+
+        result.markModified('questions');
+        result.save();
+      }
+    });
+
+    return res.redirect('/quiz/' + question_id);
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   isUserLoggedIn,
   createQuiz,
@@ -296,4 +434,5 @@ module.exports = {
   addQuestion,
   deleteQuestion,
   createLobby,
+  randomizeQuestion,
 };
