@@ -137,7 +137,7 @@ const updateProfile = async (req, res, next) => {
     if (email != '') {
       findUser.email = email;
     }
-    if (password != null) {
+    if (password != '') {
       console.log('nani');
       const hashPassword = await bcryptjs.hash(password, 10);
       findUser.password = hashPassword;
