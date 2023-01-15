@@ -60,6 +60,7 @@ io.on('connection', (socket) => {
           questionLive: false,
           gameid: room_id,
           question: 1,
+          isStarted: false,
         });
 
         socket.join(room_id);
@@ -234,7 +235,11 @@ io.on('connection', (socket) => {
     const date = new Date();
     var game = games.validateGame(id);
     var playerList = players.getPlayers(id);
+
+    if (!game) return socket.emit('host-disconnect');
+
     var gameQuestion = game.gameData.question;
+    game.gameData.isStarted = true;
 
     var addPlayer = [];
 
@@ -307,7 +312,7 @@ io.on('connection', (socket) => {
 
       game.gameData.questionLive = true;
     } else {
-      socket.emit('anauthorized-host');
+      socket.emit('unauthorized-host');
     }
   });
 
@@ -576,6 +581,29 @@ io.on('connection', (socket) => {
 
         io.to(game.gameData.gameid).emit('host-disconnect');
         socket.leave(game.gameData.gameid);
+      } else {
+        if (game.gameData.isStarted) {
+          games.removeGame(socket.id);
+
+          var playersToRemove = players.getPlayers(game.gameData.gameid);
+
+          for (var i = 0; i < playersToRemove.length; i++) {
+            players.removePlayer(playersToRemove[i].socketId);
+          }
+
+          const date = new Date();
+
+          Questions.findById({ _id: game.gameData.gameid }).then((result) => {
+            result.pin = null;
+            result.inLobby = false;
+            result.updatedAt = date;
+
+            result.save();
+          });
+
+          io.to(game.gameData.gameid).emit('host-disconnect');
+          socket.leave(game.gameData.gameid);
+        }
       }
     } else {
       var player = players.getPlayer(socket.id);
