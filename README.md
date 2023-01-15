@@ -31,3 +31,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 ![image](https://user-images.githubusercontent.com/108978331/212527910-24b122c8-217b-4472-94a4-8a405cb14c0b.png)
 #### Client
 ![image](https://user-images.githubusercontent.com/108978331/212527949-66a767e3-aff5-4308-bdef-0b4d252e3a5a.png)
+
+### Game Over
+#### Host & Client
+![image](https://user-images.githubusercontent.com/108978331/212528011-ec52512c-e0fc-4a6e-8bfb-c46e25c960ff.png)
+
