@@ -1,4 +1,5 @@
-# <h1 style="text-align: center;"> quiz-bee-node-project </h1>
+# QUBE
+<h1 style="text-align: center;"> quiz-bee-node-project </h1>
 
 ## How to run?
 
