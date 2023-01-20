@@ -14,8 +14,33 @@ const isUserLoggedIn = async (req, res, next) => {
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
+    if (!req.query.search) {
+      const findReport = await Reports.find(
+        { user_id: _id },
+        '_id question_text question_description createdAt socket_id'
+      ).sort({ createdAt: -1 });
+
+      return res.render('reports.ejs', { findUser, findReport });
+    }
+
+    let key = req.query.search;
+
     const findReport = await Reports.find(
-      { user_id: _id },
+      {
+        $and: [
+          { user_id: _id },
+          {
+            $or: [
+              {
+                question_description: { $regex: key.toString(), $options: 'i' },
+              },
+              {
+                question_text: { $regex: key.toString(), $options: 'i' },
+              },
+            ],
+          },
+        ],
+      },
       '_id question_text question_description createdAt socket_id'
     ).sort({ createdAt: -1 });
 
@@ -181,4 +206,8 @@ const deleteReport = async (req, res, next) => {
   }
 };
 
-module.exports = { isUserLoggedIn, downloadReport, deleteReport };
+module.exports = {
+  isUserLoggedIn,
+  downloadReport,
+  deleteReport,
+};
