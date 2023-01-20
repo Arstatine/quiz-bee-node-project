@@ -87,6 +87,17 @@ body {
   font-size: 14px;
 }
 
+select {
+  border: 1px solid black;
+  outline: none;
+  height: 55px;
+  padding: 0 2rem;
+  border-radius: 100px;
+  width: 100%;
+  transition: background 0.5s;
+  font-size: 18px;
+}
+
 input[type='text'],
 input[type='password'],
 input[type='email'] {

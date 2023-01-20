@@ -49,7 +49,11 @@ const isUserLoggedIn = async (req, res, next) => {
 
 const createNewUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, type, password } = req.body;
+
+    let isAdmin = false;
+
+    if (type === 'admin') isAdmin = true;
 
     const findEmail = await Users.find({ email: email });
 
@@ -65,7 +69,7 @@ const createNewUser = async (req, res, next) => {
 
     const user = await Users.create({
       name,
-      isAdmin: false,
+      isAdmin,
       email,
       avatar,
       password: hashPassword,
