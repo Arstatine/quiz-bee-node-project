@@ -2,6 +2,59 @@ const { Users, Questions, Reports } = require('../../models');
 const fs = require('fs');
 var crypto = require('crypto');
 
+const randomizeFeature = async (question_id) => {
+  await Questions.findById({ _id: question_id }).then((result) => {
+    if (result) {
+      var easy = [];
+      var average = [];
+      var difficult = [];
+
+      const randomize = (array) => {
+        const newArray = [...array];
+
+        newArray.reverse().forEach((item, index) => {
+          const j = Math.floor(Math.random() * (index + 1));
+          [newArray[index], newArray[j]] = [newArray[j], newArray[index]];
+        });
+
+        return newArray;
+      };
+
+      for (let i = 0; i < result.questions.length; i++) {
+        if (result.questions[i].question.level === 'easy') {
+          easy.push(result.questions[i]);
+        } else if (result.questions[i].question.level === 'average') {
+          average.push(result.questions[i]);
+        } else {
+          difficult.push(result.questions[i]);
+        }
+      }
+
+      var newArrayList = [];
+      easy = randomize(easy);
+      average = randomize(average);
+      difficult = randomize(difficult);
+
+      for (let i = 0; i < easy.length; i++) {
+        newArrayList.push(easy[i]);
+      }
+
+      for (let i = 0; i < average.length; i++) {
+        newArrayList.push(average[i]);
+      }
+
+      for (let i = 0; i < difficult.length; i++) {
+        newArrayList.push(difficult[i]);
+      }
+
+      result.questions = newArrayList;
+
+      result.markModified('questions');
+      result.save();
+    }
+  });
+};
+
 const isUserLoggedIn = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
@@ -301,6 +354,8 @@ const addQuestion = async (req, res, next) => {
     findQuestion.markModified('questions');
     await findQuestion.save();
 
+    randomizeFeature(question_id);
+
     return res.redirect('/quiz/' + question_id);
   } catch (e) {
     next(e);
@@ -389,33 +444,7 @@ const randomizeQuestion = async (req, res, next) => {
 
     if (!question_id.match(/^[0-9a-fA-F]{24}$/)) return res.redirect('/home');
 
-    await Questions.findById({ _id: question_id }).then((result) => {
-      if (result) {
-        const randomize = (array) => {
-          const newArray = [...array];
-
-          newArray.reverse().forEach((item, index) => {
-            const j = Math.floor(Math.random() * (index + 1));
-            [newArray[index], newArray[j]] = [newArray[j], newArray[index]];
-          });
-
-          return newArray;
-        };
-
-        var currentValue = randomize(result.questions);
-
-        while (
-          JSON.stringify(currentValue) === JSON.stringify(result.questions)
-        ) {
-          currentValue = randomize(result.questions);
-        }
-
-        result.questions = currentValue;
-
-        result.markModified('questions');
-        result.save();
-      }
-    });
+    randomizeFeature(question_id);
 
     return res.redirect('/quiz/' + question_id);
   } catch (e) {
