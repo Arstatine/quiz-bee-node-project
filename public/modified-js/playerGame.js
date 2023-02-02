@@ -163,7 +163,7 @@ $(document).ready(function () {
       return b.score - a.score;
     });
 
-    if (leaderboard.length == 3) {
+    if (leaderboard.length >= 3) {
       appendFinalLeaderboard(leaderboard, 3);
     } else if (leaderboard.length == 2) {
       appendFinalLeaderboard(leaderboard, 2);
