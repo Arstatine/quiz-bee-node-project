@@ -55,6 +55,41 @@ $(document).ready(function () {
     socket.emit('host-join-game', id, user_id);
   });
 
+  // tie breaker
+  socket.on('question-tie', (data) => {
+    $('.remove-correct-answer').remove();
+    $('.remove-question-text').remove();
+    $('.remove-question-level').remove();
+    $('.remove-table').remove();
+    $('#remove-next').remove();
+
+    if (data.tie) {
+      appendTie();
+    }
+
+    updateTimer(3);
+
+    appendText(data.text);
+    appendLevel(data.level, data.points);
+
+    setTimeout(() => {
+      clearInterval(timer);
+      if (data.img != null) {
+        appendImg(data.img);
+      }
+      appendPlayTimer();
+      updateTimer(data.timer);
+
+      if (data.type === 'trueFalse') {
+        appendTrueFalse();
+      } else if (data.type === 'multipleChoice') {
+        appendChoices(data.choices);
+      } else {
+        appendIdentification();
+      }
+    }, 2900);
+  });
+
   // if question == 0
   socket.on('game-over', (leaderboard) => {
     appendWinner();
@@ -74,17 +109,20 @@ $(document).ready(function () {
       return b.score - a.score;
     });
 
-    if (leaderboard.length == 3) {
+    if (leaderboard.length >= 3) {
       appendFinalLeaderboard(leaderboard, 3);
     } else if (leaderboard.length == 2) {
       appendFinalLeaderboard(leaderboard, 2);
     } else if (leaderboard.length == 1) {
       appendFinalLeaderboard(leaderboard, 1);
     }
+
+    $('#remove-leaderboard').remove();
   });
 
   // if question already answered
   socket.on('hands-up-host', (data) => {
+    $('.remove-correct-answer').remove();
     $('.remove-img').remove();
     $('.remove-answered-class').remove();
     $('.remove-audio-timer').remove();
@@ -178,6 +216,22 @@ $(document).ready(function () {
     }, 2900);
   });
 
+  //add tie
+  function appendTie() {
+    $('#tie-id').append(
+      `<p
+          class="text-light py-3 px-5 w-50 mt-5 text-level remove-question-level"
+          style="
+            font-size: 1.75rem;
+            font-weight: bolder;
+            background-color: #ddd;
+            color: #222 !important;
+          "
+        >Tie Breaker</p>
+        `
+    );
+  }
+
   //add image
   function appendImg(url) {
     $('#img-id').append(
@@ -253,7 +307,7 @@ $(document).ready(function () {
       id="remove-leaderboard"
       style="font-weight: bold; font-size: 1.5rem; border: none !important"
     >
-    Leaderbord
+    Leaderboard
     </button>
   `);
   }
@@ -465,12 +519,11 @@ $(document).ready(function () {
     </button>`);
   }
 
-  // append level
+  // append level of question
   function appendLevel(level, points) {
-    switch (level) {
-      case 'easy':
-        $('#level-id').append(
-          `<p
+    if (level === 'easy') {
+      $('#level-id').append(
+        `<p
             class="text-light py-3 px-5 w-50 text-level remove-question-level"
             style="
               font-size: 1.75rem;
@@ -479,15 +532,14 @@ $(document).ready(function () {
             "
           >
             Easy &nbsp;+` +
-            points +
-            `
+          points +
+          `
           </p>
           `
-        );
-        break;
-      case 'average':
-        $('#level-id').append(
-          `<p
+      );
+    } else if (level === 'average') {
+      $('#level-id').append(
+        `<p
           class="text-light py-3 px-5 w-50 text-level remove-question-level"
           style="
             font-size: 1.75rem;
@@ -496,16 +548,14 @@ $(document).ready(function () {
           "
         >
           Average &nbsp;+` +
-            points +
-            `
+          points +
+          `
         </p>
           `
-        );
-        break;
-
-      case 'difficult':
-        $('#level-id').append(
-          `
+      );
+    } else {
+      $('#level-id').append(
+        `
           <p
             class="text-light py-3 px-5 w-50 text-level remove-question-level"
             style="
@@ -515,13 +565,10 @@ $(document).ready(function () {
             "
           >
             Difficult &nbsp;+` +
-            points +
-            `
+          points +
+          `
           </p>`
-        );
-        break;
-      default:
-        break;
+      );
     }
   }
 

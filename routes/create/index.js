@@ -24,12 +24,26 @@ router
   .post(auth, createController.addQuestion);
 
 router
+  .route('/quiz/:id/addtie')
+  .get(auth, createController.fetchTieQuestion)
+  .post(auth, createController.addTieQuestion);
+
+router
   .route('/quiz/:id/:arr')
   .get(auth, createController.editQuestion)
   .post(auth, createController.updateQuestion);
 
 router
+  .route('/quiz/:id/:arr/tie')
+  .get(auth, createController.editQuestionTie)
+  .post(auth, createController.updateQuestionTie);
+
+router
   .route('/quiz/:id/:arr/delete')
   .get(auth, createController.questionDelete);
+
+router
+  .route('/quiz/:id/tiedelete/:arr')
+  .get(auth, createController.questionDeleteTie);
 
 module.exports = router;

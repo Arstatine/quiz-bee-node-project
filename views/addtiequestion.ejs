@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuBe | Add Question</title>
+    <link rel="icon" href="../../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../../css/home.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+    <style>
+      @media (max-width: 768px) {
+        .container {
+          width: 100% !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="min-height: 100vh; height: 100%">
+    <div class="container pt-5 w-50">
+      <form
+        action=""
+        method="POST"
+        class="bg-light py-5 px-3"
+        enctype="multipart/form-data"
+      >
+        <h3 class="text-center text-dark">Add Tie Breaker Question</h3>
+        <br />
+        <input
+          type="text"
+          class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="text"
+          placeholder="Enter question"
+          required
+        />
+
+        <input
+          type="file"
+          class="file-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="file"
+          accept="image/*"
+        />
+
+        <input
+          type="number"
+          class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="points"
+          placeholder="Enter point/s"
+          required
+        />
+
+        <input
+          type="number"
+          class="form-control-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          name="timer"
+          placeholder="Enter timer (in second/s)"
+          required
+        />
+
+        <select
+          name="level"
+          class="form-select-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          required
+        >
+          <option value="">Select level</option>
+          <option value="easy">Easy</option>
+          <option value="average">Average</option>
+          <option value="Difficult">Difficult</option>
+        </select>
+
+        <select
+          name="type"
+          class="form-select-lg w-100 my-2 rounded-0 border border-2 border-secondary p-3"
+          id="questionType"
+          required
+        >
+          <option value="">Select type</option>
+          <option value="trueFalse">True or False</option>
+          <option value="multipleChoice">Multiple Choice</option>
+          <option value="identification">Identification</option>
+        </select>
+
+        <div class="container-fluid p-0 my-2 text-center">
+          <div class="w-100 text-start d-flex question-type flex-column"></div>
+        </div>
+
+        <div class="d-flex">
+          <button
+            type="submit"
+            class="btn btn-success btn-lg my-2 rounded-0 p-3 w-50 m-2 fw-bold"
+          >
+            Save
+          </button>
+          <a
+            href="/quiz/<%=question_id%>"
+            class="btn btn-secondary btn-lg my-2 rounded-0 p-3 w-50 m-2 fw-bold"
+            >Cancel</a
+          >
+        </div>
+      </form>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="../../modified-js/tiebreaker.js"></script>
+  </body>
+</html>

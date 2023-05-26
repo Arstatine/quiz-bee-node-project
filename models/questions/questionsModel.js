@@ -35,6 +35,41 @@ const question = {
   },
 };
 
+const tieQuestion = {
+  text: {
+    type: String,
+    required: false,
+  },
+  points: {
+    type: Number,
+    required: false,
+  },
+  timer: {
+    type: Number,
+    required: false,
+  },
+  level: {
+    type: String,
+    required: false,
+  },
+  img: {
+    type: String,
+    required: false,
+  },
+  type: {
+    type: String,
+    required: false,
+  },
+  choices: {
+    type: Array,
+    required: false,
+  },
+  correctAnswer: {
+    type: String,
+    required: false,
+  },
+};
+
 const questionsSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -58,6 +93,11 @@ const questionsSchema = new mongoose.Schema({
     type: Array,
     required: false,
     question,
+  },
+  tieQuestions: {
+    type: Array,
+    required: false,
+    tieQuestion,
   },
   inLobby: {
     type: Boolean,

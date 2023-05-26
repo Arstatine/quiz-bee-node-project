@@ -113,7 +113,7 @@ const createQuestion = async (req, res, next) => {
 
     const findQuestion = await Questions.findOne(
       { _id: question_id },
-      '_id title description questions'
+      '_id title description questions tieQuestions'
     );
 
     if (!findQuestion) return res.redirect('/dashboard');
@@ -125,7 +125,10 @@ const createQuestion = async (req, res, next) => {
 
     if (!findUser.isAdmin) return res.redirect('/home');
 
-    return res.render('questionsview.ejs', { findUser, findQuestion });
+    return res.render('questionsview.ejs', {
+      findUser,
+      findQuestion,
+    });
   } catch (e) {
     next(e);
   }
@@ -155,6 +158,39 @@ const editQuestion = async (req, res, next) => {
     if (!findUser.isAdmin) return res.redirect('/home');
 
     return res.render('editquestion.ejs', {
+      findUser,
+      findQuestion,
+      arr: arrayNum,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const editQuestionTie = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+
+    const arrayNum = req.params.arr;
+    const question_id = req.params.id;
+    const _id = req.session.user_id;
+
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
+    const findQuestion = await Questions.findOne(
+      { _id: question_id },
+      '_id title description tieQuestions'
+    );
+
+    const findUser = await Users.findOne(
+      { _id },
+      '_id name email isAdmin avatar'
+    );
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
+    return res.render('edittiequestion.ejs', {
       findUser,
       findQuestion,
       arr: arrayNum,
@@ -233,6 +269,75 @@ const updateQuestion = async (req, res, next) => {
   }
 };
 
+const updateQuestionTie = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+    const date = new Date();
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
+    const arrayNum = req.params.arr;
+    const arr = arrayNum - 1;
+    const question_id = req.params.id;
+
+    const {
+      text,
+      points,
+      timer,
+      level,
+      type,
+      answer,
+      choice1,
+      choice2,
+      choice3,
+      choice4,
+    } = req.body;
+
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
+    const findQuestion = await Questions.findById(
+      { _id: question_id },
+      'tieQuestions updatedAt'
+    );
+
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    if (req.files) {
+      var imgFile = req.files.file;
+      var fileName =
+        crypto.randomBytes(20).toString('hex') + '-' + imgFile.name;
+      imgFile.mv('./public/uploads/' + fileName);
+    } else {
+      var fileName = findQuestion.tieQuestions[arr].tieQuestion.img;
+    }
+
+    findQuestion.tieQuestions[arr].tieQuestion = {
+      text,
+      points: parseInt(points),
+      timer: parseInt(timer),
+      level,
+      img: fileName,
+      type,
+      answer,
+      choices: [choice1, choice2, choice3, choice4],
+    };
+
+    findQuestion.updatedAt = date;
+
+    findQuestion.markModified('tieQuestions');
+    await findQuestion.save();
+
+    return res.redirect('/quiz/' + question_id);
+  } catch (e) {
+    next(e);
+  }
+};
+
 const questionDelete = async (req, res, next) => {
   try {
     if (!req.session.user_id) return res.redirect('/login');
@@ -257,15 +362,60 @@ const questionDelete = async (req, res, next) => {
 
     if (!findQuestion) return res.redirect('/dashboard');
 
-    fs.unlinkSync(
-      './public/uploads/' + findQuestion.questions[arr].question.img
-    );
+    if (findQuestion.questions[arr].question.img != null) {
+      fs.unlinkSync(
+        './public/uploads/' + findQuestion.questions[arr].question.img
+      );
+    }
 
     findQuestion.questions = findQuestion.questions.filter(
       (q, index) => index != arr
     );
 
     findQuestion.markModified('questions');
+    await findQuestion.save();
+
+    return res.redirect('/quiz/' + question_id);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const questionDeleteTie = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
+    const arrayNum = req.params.arr;
+    const arr = arrayNum - 1;
+    const question_id = req.params.id;
+
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
+    const findQuestion = await Questions.findById(
+      { _id: question_id },
+      'questions updatedAt tieQuestions'
+    );
+
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    if (findQuestion.tieQuestions[arr].tieQuestion.img != null) {
+      fs.unlinkSync(
+        './public/uploads/' + findQuestion.tieQuestions[arr].tieQuestion.img
+      );
+    }
+
+    findQuestion.tieQuestions = findQuestion.tieQuestions.filter(
+      (q, index) => index != arr
+    );
+
+    findQuestion.markModified('tieQuestions');
     await findQuestion.save();
 
     return res.redirect('/quiz/' + question_id);
@@ -289,6 +439,26 @@ const fetchQuestion = async (req, res, next) => {
       return res.redirect('/dashboard');
 
     return res.render('addquestion.ejs', { question_id: question_id });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const fetchTieQuestion = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
+    const question_id = req.params.id;
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
+    return res.render('addtiequestion.ejs', { question_id: question_id });
   } catch (e) {
     next(e);
   }
@@ -355,6 +525,72 @@ const addQuestion = async (req, res, next) => {
     await findQuestion.save();
 
     randomizeFeature(question_id);
+
+    return res.redirect('/quiz/' + question_id);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const addTieQuestion = async (req, res, next) => {
+  try {
+    if (!req.session.user_id) return res.redirect('/login');
+    const date = new Date();
+
+    const _id = req.session.user_id;
+
+    const findUser = await Users.findById({ _id }, '_id isAdmin avatar');
+
+    if (!findUser.isAdmin) return res.redirect('/home');
+
+    const question_id = req.params.id;
+    if (!question_id.match(/^[0-9a-fA-F]{24}$/))
+      return res.redirect('/dashboard');
+
+    const {
+      text,
+      points,
+      timer,
+      level,
+      type,
+      answer,
+      choice1,
+      choice2,
+      choice3,
+      choice4,
+    } = req.body;
+
+    const findQuestion = await Questions.findById(
+      { _id: question_id },
+      'questions updatedAt tieQuestions'
+    );
+
+    if (!findQuestion) return res.redirect('/dashboard');
+
+    if (req.files) {
+      var imgFile = req.files.file;
+      var fileName =
+        crypto.randomBytes(20).toString('hex') + '-' + imgFile.name;
+      imgFile.mv('./public/uploads/' + fileName);
+    }
+
+    findQuestion.tieQuestions[findQuestion.tieQuestions.length] = {
+      tieQuestion: {
+        text,
+        points: parseInt(points),
+        timer: parseInt(timer),
+        level,
+        img: fileName,
+        type,
+        answer,
+        choices: [choice1, choice2, choice3, choice4],
+      },
+    };
+
+    findQuestion.updatedAt = date;
+
+    findQuestion.markModified('tieQuestions');
+    await findQuestion.save();
 
     return res.redirect('/quiz/' + question_id);
   } catch (e) {
@@ -464,4 +700,9 @@ module.exports = {
   deleteQuestion,
   createLobby,
   randomizeQuestion,
+  fetchTieQuestion,
+  addTieQuestion,
+  questionDeleteTie,
+  editQuestionTie,
+  updateQuestionTie,
 };

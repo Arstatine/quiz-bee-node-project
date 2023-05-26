@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuBe | Edit</title>
+    <link rel="icon" href="../../../assets/QuBe-Logo.png" />
+    <link rel="stylesheet" href="../../../css/home.css" />
+    <link rel="stylesheet" href="../../../css/bootstrap.min.css" />
+
+    <style>
+      @media (max-width: 1200px) {
+        .container {
+          width: 100% !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="min-height: 100vh; height: 100%">
+    <div class="container w-50 mt-5">
+      <% if(findQuestion.tieQuestions[arr-1] != null){%><%-
+      include("layouts/edithandlerstie.ejs")%> <%} else {%>
+      <a
+        href="/quiz/<%=findQuestion._id%>"
+        class="btn btn-primary btn-lg text-light d-flex justify-content-center align-items-center mb-3 rounded-0"
+        style="min-width: 100px; width: 150px"
+        ><ion-icon name="arrow-back-circle-outline"></ion-icon>&nbsp;Back</a
+      >
+      <p class="alert alert-danger rounded-0">No data found.</p>
+      <%}%>
+    </div>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="../../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../../modified-js/question.js"></script>
+  </body>
+</html>

@@ -1,35 +1,35 @@
-<% if(findQuestion.questions != ''){ %>
-
-<h2 class="text-light text-center mt-5"><%=findQuestion.title%> QUESTIONS</h2>
-<center><hr class="text-light mb-5 w-75 border-2" /></center>
-<% let count = 0%> <%findQuestion.questions.forEach(question => { %> <%
+<% if(findQuestion.tieQuestions != ''){ %>
+<h2 class="text-light text-center mt-5">TIE BREAKER</h2>
+<center><hr class="text-light mb-5 w-75 border-2 mb-5" /></center>
+<% let count = 0%> <%findQuestion.tieQuestions.forEach(question => { %> <%
 count++%>
 <div
   class="text-center border d-flex justify-content-between align-items-center w-auto mb-2"
 >
-  <%if(findQuestion.questions[count-1].question.level == "easy"){%>
+  <%if(findQuestion.tieQuestions[count-1].tieQuestion.level == "easy"){%>
   <!-- easy -->
   <a
-    href="/quiz/<%-findQuestion._id%>/<%=count%>"
+    href="/quiz/<%-findQuestion._id%>/<%=count%>/tie"
     class="btn btn-success btn-lg text-start w-100 rounded-0 px-3 py-3 fw-medium"
     style="font-size: 2vmin !important"
-    ><%=question.question.text%>
+    ><%=question.tieQuestion.text%>
     <a
-      href="/quiz/<%-findQuestion._id%>/<%=count%>/delete"
+      href="/quiz/<%-findQuestion._id%>/tiedelete/<%=count%>"
       class="btn btn-danger rounded-0 py-3 px-3"
       style="font-size: 2vmin !important; height: 100% !important"
       ><ion-icon name="trash-outline"></ion-icon></a
   ></a>
 
-  <%} else if(findQuestion.questions[count-1].question.level == "average") {%>
+  <%} else if(findQuestion.tieQuestions[count-1].tieQuestion.level == "average")
+  {%>
   <!-- average -->
   <a
-    href="/quiz/<%-findQuestion._id%>/<%=count%>"
+    href="/quiz/<%-findQuestion._id%>/<%=count%>/tie"
     class="btn btn-warning btn-lg text-start w-100 rounded-0 px-3 py-3 fw-medium"
     style="font-size: 2vmin !important"
-    ><%=question.question.text%>
+    ><%=question.tieQuestion.text%>
     <a
-      href="/quiz/<%-findQuestion._id%>/<%=count%>/delete"
+      href="/quiz/<%-findQuestion._id%>/tiedelete/<%=count%>"
       class="btn btn-danger rounded-0 py-3 px-3"
       style="font-size: 2vmin !important; height: 100% !important"
       ><ion-icon name="trash-outline"></ion-icon></a
@@ -38,12 +38,12 @@ count++%>
   <%} else {%>
   <!-- difficult -->
   <a
-    href="/quiz/<%-findQuestion._id%>/<%=count%>"
+    href="/quiz/<%-findQuestion._id%>/<%=count%>/tie"
     class="btn btn-danger btn-lg text-start w-100 rounded-0 px-3 py-3 fw-medium"
     style="font-size: 2vmin !important"
-    ><%=question.question.text%>
+    ><%=question.tieQuestion.text%>
     <a
-      href="/quiz/<%-findQuestion._id%>/<%=count%>/delete"
+      href="/quiz/<%-findQuestion._id%>/tiedelete/<%=count%>"
       class="btn btn-danger rounded-0 py-3 px-3"
       style="font-size: 2vmin !important; height: 100% !important"
       ><ion-icon name="trash-outline"></ion-icon></a
@@ -52,6 +52,6 @@ count++%>
 </div>
 <% }) %> <%} else {%>
 <h6 class="alert alert-danger my-3 rounded-0 p-3" style="width: auto">
-  No question yet.
+  No tie breaker question yet.
 </h6>
 <%}%>

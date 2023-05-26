@@ -6,6 +6,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   /* background: linear-gradient(45deg, #131086, #b621f3); */
   background-image: url('../assets/bg.jpg');
+  filter: blur(0px);
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
@@ -39,7 +40,7 @@ body {
 }
 .logo {
   float: left;
-  margin-top: 25px;
+  margin-top: 5px;
   margin-left: 10px;
   color: #fff;
   font-size: 1.5em;
@@ -63,6 +64,7 @@ body {
   text-transform: uppercase;
   font-size: 40px;
   margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 .text a {
   background: orange;
@@ -83,6 +85,7 @@ body {
 .text p {
   color: #fff;
   font-size: 20px;
+  letter-spacing: 3px;
 }
 /* @media (max-width: 650px) {
   .logo {
@@ -120,4 +123,9 @@ body {
 
 .logout-btn:hover {
   background-color: rgb(221, 95, 95);
+}
+
+.reports-table {
+  height: 600px !important;
+  max-height: 600px !important;
 }

@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fileupload = require('express-fileupload');
 require('dotenv').config();
+const cors = require('cors');
 
 // socket.io
 const socketIO = require('socket.io');
@@ -13,6 +14,16 @@ const io = socketIO(httpServer);
 
 // mongo db
 require('./config/db');
+
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1);
+}
+
+// app.use(
+//   cors({
+//     origin: ['https://qube-online-competition.herokuapp.com'],
+//   })
+// );
 
 // access port
 const PORT = process.env.PORT || 3000;
@@ -61,6 +72,7 @@ io.on('connection', (socket) => {
           gameid: room_id,
           question: 1,
           isStarted: false,
+          tieBreaker: false,
         });
 
         socket.join(room_id);
@@ -86,6 +98,7 @@ io.on('connection', (socket) => {
           data.uName,
           {
             inGame: false,
+            tieBreaker: false,
           }
         );
 
@@ -124,6 +137,64 @@ io.on('connection', (socket) => {
       socket.leave(game.gameData.gameid);
     }
 
+    if (game.gameData.tieBreaker == true) {
+      Questions.findOne({ _id: id }).then((result) => {
+        if (result) {
+          if (result.tieQuestions.length == 0)
+            return io.to(game.gameData.gameid).emit('unauthorized-player');
+
+          if (result.tieQuestions.length == gameQuestion - 1) {
+            var leaderboard_list = [];
+            Reports.findOne({ socket_id: game.hostId }).then((result) => {
+              if (result) {
+                for (var i = 0; i < result.players.length; i++) {
+                  total_score = 0;
+
+                  total_score = result.players[i].total_score;
+
+                  leaderboard_list[i] = {
+                    name: result.players[i].player_name,
+                    score: total_score,
+                  };
+                }
+
+                io.in(id).emit('game-over', leaderboard_list);
+
+                game.gameLive = false;
+                game.gameData.playersAnswered = 0;
+                socket.leave(game.gameData.gameid);
+                return;
+              }
+            });
+          } else {
+            var data = result.tieQuestions;
+            io.in(id).emit('next-question-to-player', {
+              text: data[gameQuestion - 1].tieQuestion.text,
+              points: data[gameQuestion - 1].tieQuestion.points,
+              timer: data[gameQuestion - 1].tieQuestion.timer,
+              level: data[gameQuestion - 1].tieQuestion.level,
+              img: data[gameQuestion - 1].tieQuestion.img,
+              type: data[gameQuestion - 1].tieQuestion.type,
+              choices: data[gameQuestion - 1].tieQuestion.choices,
+              playersInGame: playerData.length,
+            });
+            io.in(id).emit('next-question-to-host', {
+              text: data[gameQuestion - 1].tieQuestion.text,
+              points: data[gameQuestion - 1].tieQuestion.points,
+              timer: data[gameQuestion - 1].tieQuestion.timer,
+              level: data[gameQuestion - 1].tieQuestion.level,
+              img: data[gameQuestion - 1].tieQuestion.img,
+              type: data[gameQuestion - 1].tieQuestion.type,
+              choices: data[gameQuestion - 1].tieQuestion.choices,
+              playersInGame: playerData.length,
+            });
+          }
+        }
+      });
+
+      return;
+    }
+
     Questions.findOne({ _id: id }).then((result) => {
       if (result) {
         if (result.questions.length == 0)
@@ -144,12 +215,65 @@ io.on('connection', (socket) => {
                 };
               }
 
-              io.in(id).emit('game-over', leaderboard_list);
+              //code here
+              if (leaderboard_list.length > 1) {
+                let newarr = leaderboard_list;
 
-              game.gameLive = false;
-              game.gameData.playersAnswered = 0;
-              socket.leave(game.gameData.gameid);
-              return;
+                newarr.sort(function (a, b) {
+                  return b.score - a.score;
+                });
+
+                if (newarr[0].score == newarr[1].score) {
+                  playerData.forEach((p) => {
+                    p.gameData.tieBreaker = true;
+                  });
+
+                  game.gameData.tieBreaker = true;
+                  Questions.findOne({ _id: id }).then((result) => {
+                    if (result) {
+                      if (result.tieQuestions.length == 0) {
+                        io.in(id).emit('game-over', leaderboard_list);
+                      } else {
+                        var data = result.tieQuestions;
+                        game.gameData.question = 1;
+
+                        io.in(id).emit('question-tie', {
+                          text: data[game.gameData.question - 1].tieQuestion
+                            .text,
+                          points:
+                            data[game.gameData.question - 1].tieQuestion.points,
+                          timer:
+                            data[game.gameData.question - 1].tieQuestion.timer,
+                          level:
+                            data[game.gameData.question - 1].tieQuestion.level,
+                          img: data[game.gameData.question - 1].tieQuestion.img,
+                          type: data[game.gameData.question - 1].tieQuestion
+                            .type,
+                          choices:
+                            data[game.gameData.question - 1].tieQuestion
+                              .choices,
+                          playersInGame: playerData.length,
+                          tie: true,
+                        });
+                      }
+                    }
+                  });
+                } else {
+                  io.in(id).emit('game-over', leaderboard_list);
+
+                  game.gameLive = false;
+                  game.gameData.playersAnswered = 0;
+                  socket.leave(game.gameData.gameid);
+                  return;
+                }
+              } else {
+                io.in(id).emit('game-over', leaderboard_list);
+
+                game.gameLive = false;
+                game.gameData.playersAnswered = 0;
+                socket.leave(game.gameData.gameid);
+                return;
+              }
             }
           });
         } else {
@@ -331,18 +455,120 @@ io.on('connection', (socket) => {
 
       var gameid = game.gameData.gameid;
 
-      Questions.findOne({ _id: gameid }).then((result) => {
-        var res = result.questions;
+      if (
+        game.gameData.tieBreaker == true &&
+        player.gameData.tieBreaker == true
+      ) {
+        Questions.findOne({ _id: gameid }).then((result) => {
+          var res = result.tieQuestions;
+          var text = res[gameQuestion - 1].tieQuestion.text;
+          var correctAnswer = res[gameQuestion - 1].tieQuestion.answer;
+          var level = res[gameQuestion - 1].tieQuestion.level;
+          var type = res[gameQuestion - 1].tieQuestion.type;
+          var score = res[gameQuestion - 1].tieQuestion.points;
+
+          if (data.answer == correctAnswer) {
+            Reports.findOne({ socket_id: game.hostId }).then((result) => {
+              if (result) {
+                for (let i = 0; i < result.players.length; i++) {
+                  if (result.players[i].player_id == data.user_id) {
+                    result.players[i].total_score =
+                      parseInt(score) + parseInt(result.players[i].total_score);
+                    result.players[i].question[
+                      result.players[i].question.length
+                    ] = {
+                      question_text: text,
+                      question_level: level,
+                      question_type: type,
+                      correctAnswer: correctAnswer,
+                      answer: data.answer,
+                      points: score,
+                      isCorrect: true,
+                    };
+                  }
+                }
+
+                result.updatedAt = date;
+                result.markModified('players');
+                result.markModified('players.question');
+                result.save();
+              }
+            });
+          } else {
+            Reports.findOne({ socket_id: game.hostId }).then((result) => {
+              if (result) {
+                for (let i = 0; i < result.players.length; i++) {
+                  if (result.players[i].player_id == data.user_id) {
+                    result.players[i].question[
+                      result.players[i].question.length
+                    ] = {
+                      question_text: text,
+                      question_level: level,
+                      question_type: type,
+                      correctAnswer: correctAnswer,
+                      answer: data.answer,
+                      points: 0,
+                      isCorrect: false,
+                    };
+                  }
+                }
+
+                result.updatedAt = date;
+                result.markModified('players');
+                result.markModified('players.question');
+                result.save();
+              }
+            });
+          }
+
+          if (game.gameData.playersAnswered == playerNum.length) {
+            setTimeout(() => {
+              Reports.findOne({ socket_id: game.hostId }).then((result) => {
+                if (result) {
+                  io.to(game.gameData.gameid).emit('hands-up-host', {
+                    game_id: game.gameData.gameid,
+                    user_id: null,
+                    correctAnswer: correctAnswer,
+                    isCorrect: true,
+                  });
+
+                  for (let i = 0; i < result.players.length; i++) {
+                    let playerIsCorrect =
+                      result.players[i].question[
+                        result.players[i].question.length - 1
+                      ].isCorrect;
+
+                    io.to(result.players[i].player_socket).emit(
+                      'hands-up-player',
+                      {
+                        game_id: game.gameData.gameid,
+                        user_id: result.players[i].player_id,
+                        correctAnswer: correctAnswer,
+                        isCorrect: playerIsCorrect,
+                      }
+                    );
+                  }
+                }
+              });
+
+              game.gameData.questionLive = false;
+              game.gameData.playersAnswered = 0;
+            }, 100);
+          }
+        });
+
+        return;
+      }
+
+      Questions.findOne({ _id: gameid }).then((ress) => {
+        var res = ress.questions;
         var text = res[gameQuestion - 1].question.text;
         var correctAnswer = res[gameQuestion - 1].question.answer;
         var level = res[gameQuestion - 1].question.level;
         var type = res[gameQuestion - 1].question.type;
         var score = res[gameQuestion - 1].question.points;
-        var isCorrect = false;
 
         if (data.answer == correctAnswer) {
-          isCorrect = true;
-
           Reports.findOne({ socket_id: game.hostId }).then((result) => {
             if (result) {
               for (let i = 0; i < result.players.length; i++) {
@@ -356,17 +582,7 @@ io.on('connection', (socket) => {
                     correctAnswer: correctAnswer,
                     answer: data.answer,
                     points: score,
-                    isCorrect: isCorrect,
-                  };
-                } else {
-                  result.players[i].question[gameQuestion - 1] = {
-                    question_text: text,
-                    question_level: level,
-                    question_type: type,
-                    correctAnswer: correctAnswer,
-                    answer: '',
-                    points: 0,
-                    isCorrect: false,
+                    isCorrect: true,
                   };
                 }
               }
@@ -377,23 +593,6 @@ io.on('connection', (socket) => {
               result.save();
             }
           });
-
-          io.to(game.gameData.gameid).emit('hands-up-player', {
-            game_id: game.gameData.gameid,
-            user_id: data.user_id,
-            correctAnswer: correctAnswer,
-            isCorrect: isCorrect,
-          });
-          io.to(game.gameData.gameid).emit('hands-up-host', {
-            game_id: game.gameData.gameid,
-            user_id: data.user_id,
-            correctAnswer: correctAnswer,
-            isCorrect: isCorrect,
-          });
-
-          game.gameData.playersAnswered = 0;
-          game.gameData.questionLive = false;
-          return;
         } else {
           Reports.findOne({ socket_id: game.hostId }).then((result) => {
             if (result) {
@@ -420,21 +619,38 @@ io.on('connection', (socket) => {
         }
 
         if (game.gameData.playersAnswered == playerNum.length) {
-          io.to(game.gameData.gameid).emit('hands-up-player', {
-            game_id: game.gameData.gameid,
-            user_id: null,
-            correctAnswer: correctAnswer,
-            isCorrect: false,
-          });
-          io.to(game.gameData.gameid).emit('hands-up-host', {
-            game_id: game.gameData.gameid,
-            user_id: null,
-            correctAnswer: correctAnswer,
-            isCorrect: false,
-          });
+          setTimeout(() => {
+            Reports.findOne({ socket_id: game.hostId }).then((result) => {
+              if (result) {
+                io.to(game.gameData.gameid).emit('hands-up-host', {
+                  game_id: game.gameData.gameid,
+                  user_id: null,
+                  correctAnswer: correctAnswer,
+                  isCorrect: true,
+                });
 
-          game.gameData.questionLive = false;
-          game.gameData.playersAnswered = 0;
+                for (let i = 0; i < result.players.length; i++) {
+                  let playerIsCorrect =
+                    result.players[i].question[
+                      result.players[i].question.length - 1
+                    ].isCorrect;
+
+                  io.to(result.players[i].player_socket).emit(
+                    'hands-up-player',
+                    {
+                      game_id: game.gameData.gameid,
+                      user_id: result.players[i].player_id,
+                      correctAnswer: correctAnswer,
+                      isCorrect: playerIsCorrect,
+                    }
+                  );
+                }
+              }
+            });
+
+            game.gameData.questionLive = false;
+            game.gameData.playersAnswered = 0;
+          }, 100);
         }
       });
     }
@@ -447,49 +663,141 @@ io.on('connection', (socket) => {
     var gameQuestion = game.gameData.question;
     game.gameData.questionLive = false;
 
-    Questions.findOne({ _id: id }).then((result) => {
-      if (result) {
-        var res = result.questions;
-        var text = res[gameQuestion - 1].question.text;
-        var correctAnswer = res[gameQuestion - 1].question.answer;
-        var level = res[gameQuestion - 1].question.level;
-        var type = res[gameQuestion - 1].question.type;
+    if (game.gameData.tieBreaker == true) {
+      Questions.findOne({ _id: id }).then((ress) => {
+        if (ress) {
+          var reslen = ress.questions.length;
+          var res = ress.tieQuestions;
+          var text = res[gameQuestion - 1].tieQuestion.text;
+          var correctAnswer = res[gameQuestion - 1].tieQuestion.answer;
+          var level = res[gameQuestion - 1].tieQuestion.level;
+          var type = res[gameQuestion - 1].tieQuestion.type;
 
-        Reports.findOne({ socket_id: game.hostId }).then((result) => {
-          if (result) {
-            for (let i = 0; i < result.players.length; i++) {
-              result.players[i].question[gameQuestion - 1] = {
-                question_text: text,
-                question_level: level,
-                question_type: type,
-                correctAnswer: correctAnswer,
-                answer: '',
-                points: 0,
-                isCorrect: false,
-              };
+          Reports.findOne({ socket_id: game.hostId }).then((result) => {
+            if (result) {
+              for (let i = 0; i < result.players.length; i++) {
+                if (
+                  result.players[i].question[reslen - 1 + gameQuestion] ==
+                    null ||
+                  result.players[i].question[reslen - 1 + gameQuestion] == '' ||
+                  result.players[i].question.length < 1
+                ) {
+                  result.players[i].question[reslen - 1 + gameQuestion] = {
+                    question_text: text,
+                    question_level: level,
+                    question_type: type,
+                    correctAnswer: correctAnswer,
+                    answer: '',
+                    points: 0,
+                    isCorrect: false,
+                  };
+                }
+              }
+
+              result.updatedAt = date;
+              result.markModified('players');
+              result.markModified('players.question');
+              result.save();
             }
+          });
 
-            result.updatedAt = date;
-            result.markModified('players');
-            result.markModified('players.question');
-            result.save();
-          }
-        });
+          setTimeout(() => {
+            Reports.findOne({ socket_id: game.hostId }).then((result) => {
+              io.to(game.gameData.gameid).emit('hands-up-host', {
+                game_id: game.gameData.gameid,
+                user_id: null,
+                correctAnswer: correctAnswer,
+                isCorrect: true,
+              });
 
-        io.to(game.gameData.gameid).emit('hands-up-player', {
-          game_id: game.gameData.gameid,
-          user_id: null,
-          correctAnswer: correctAnswer,
-          isCorrect: false,
-        });
-        io.to(game.gameData.gameid).emit('hands-up-host', {
-          game_id: game.gameData.gameid,
-          user_id: null,
-          correctAnswer: correctAnswer,
-          isCorrect: false,
-        });
-      }
-    });
+              for (let i = 0; i < result.players.length; i++) {
+                let playerIsCorrect =
+                  result.players[i].question[
+                    result.players[i].question.length - 1
+                  ].isCorrect;
+
+                io.to(result.players[i].player_socket).emit('hands-up-player', {
+                  game_id: game.gameData.gameid,
+                  user_id: result.players[i].player_id,
+                  correctAnswer: correctAnswer,
+                  isCorrect: playerIsCorrect,
+                });
+              }
+            });
+          }, 100);
+
+          game.gameData.questionLive = false;
+          game.gameData.playersAnswered = 0;
+        }
+      });
+
+      return;
+    } else {
+      Questions.findOne({ _id: id }).then((ress) => {
+        if (ress) {
+          var res = ress.questions;
+          var text = res[gameQuestion - 1].question.text;
+          var correctAnswer = res[gameQuestion - 1].question.answer;
+          var level = res[gameQuestion - 1].question.level;
+          var type = res[gameQuestion - 1].question.type;
+
+          Reports.findOne({ socket_id: game.hostId }).then((result) => {
+            if (result) {
+              for (let i = 0; i < result.players.length; i++) {
+                if (
+                  result.players[i].question[gameQuestion - 1] == null ||
+                  result.players[i].question[gameQuestion - 1] == '' ||
+                  result.players[i].question.length < 1
+                ) {
+                  result.players[i].question[gameQuestion - 1] = {
+                    question_text: text,
+                    question_level: level,
+                    question_type: type,
+                    correctAnswer: correctAnswer,
+                    answer: '',
+                    points: 0,
+                    isCorrect: false,
+                  };
+                }
+              }
+
+              result.updatedAt = date;
+              result.markModified('players');
+              result.markModified('players.question');
+              result.save();
+            }
+          });
+
+          setTimeout(() => {
+            Reports.findOne({ socket_id: game.hostId }).then((result) => {
+              io.to(game.gameData.gameid).emit('hands-up-host', {
+                game_id: game.gameData.gameid,
+                user_id: null,
+                correctAnswer: correctAnswer,
+                isCorrect: true,
+              });
+
+              for (let i = 0; i < result.players.length; i++) {
+                let playerIsCorrect =
+                  result.players[i].question[
+                    result.players[i].question.length - 1
+                  ].isCorrect;
+
+                io.to(result.players[i].player_socket).emit('hands-up-player', {
+                  game_id: game.gameData.gameid,
+                  user_id: result.players[i].player_id,
+                  correctAnswer: correctAnswer,
+                  isCorrect: playerIsCorrect,
+                });
+              }
+            });
+          }, 100);
+
+          game.gameData.questionLive = false;
+          game.gameData.playersAnswered = 0;
+        }
+      });
+    }
   });
 
   // show leaderboard for both player and host
